@@ -126,22 +126,27 @@ export default function Navbar({ userEmail: propUserEmail, onSignOut }: NavbarPr
         {/* Right side: Signed in user details */}
         {currentEmail ? (
           <div className="flex items-center gap-3 sm:gap-4">
-            <div className="text-right flex flex-col justify-center">
-              <span className="text-[10px] sm:text-[11px] font-medium text-[#71717A] leading-tight">
-                Signed in as
+            <div className="h-[32px] sm:h-[36px] flex flex-col justify-between py-[0.5px] text-right">
+              <span className="text-[10px] sm:text-[11px] font-medium text-[#71717A] leading-none">
+                Signed in
               </span>
-              <span className="text-xs sm:text-[13px] font-bold text-[#111111] leading-tight truncate max-w-[170px] sm:max-w-[280px]">
+              <span className="text-xs sm:text-[14px] font-bold text-[#111111] leading-none truncate max-w-[180px] sm:max-w-[300px]">
                 {currentEmail}
               </span>
             </div>
             {onSignOut && (
-              <button
-                type="button"
-                onClick={onSignOut}
-                className="px-3 py-1.5 text-xs font-semibold text-[#71717A] hover:text-[#111111] hover:bg-[#F4F4F5] border border-[#E4E4E7] rounded-full transition cursor-pointer"
-              >
-                Sign Out
-              </button>
+              <>
+                {/* Vertical Divider Line */}
+                <div className="w-[1px] h-[28px] sm:h-[32px] bg-[#E4E4E7] shrink-0" />
+
+                <button
+                  type="button"
+                  onClick={onSignOut}
+                  className="px-3.5 py-1.5 text-xs font-semibold text-[#71717A] hover:text-red-600 hover:border-red-300 hover:bg-red-50 border border-[#E4E4E7] rounded-full transition cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              </>
             )}
           </div>
         ) : (

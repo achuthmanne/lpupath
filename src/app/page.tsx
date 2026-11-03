@@ -304,7 +304,7 @@ export default function Home() {
             </div>
             <button
               onClick={handleSignOut}
-              className="px-4 py-2 text-xs font-semibold text-[#71717A] hover:text-[#111111] bg-white border border-[#E4E4E7] rounded-xl transition cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-[#71717A] hover:text-red-600 hover:border-red-300 hover:bg-red-50 bg-white border border-[#E4E4E7] rounded-xl transition cursor-pointer"
             >
               Sign Out
             </button>
