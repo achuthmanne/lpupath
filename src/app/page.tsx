@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { createClient } from "@/lib/supabase/client";
-import { Mail, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck } from "lucide-react";
+import { Mail, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck, ArrowUpRight } from "lucide-react";
 
 export default function Home() {
   const [supabase] = useState(() => createClient());
@@ -430,7 +430,7 @@ export default function Home() {
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
                 {step === "email"
                   ? "Enter your official university email to access the on-campus placement intelligence archive."
-                  : `Enter the 6-digit code delivered to ${email}`}
+                  : `Enter the 8-digit verification code delivered to ${email}`}
               </p>
             </div>
 
@@ -517,19 +517,9 @@ export default function Home() {
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between pt-1">
-                    <p className="text-[11px] text-zinc-500">
-                      Enter the 8-digit code sent to your Outlook.
-                    </p>
-                    <a
-                      href="https://outlook.office.com/mail/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[11px] text-[#FF6500] hover:underline font-semibold inline-flex items-center gap-1"
-                    >
-                      Open Outlook Web &rarr;
-                    </a>
-                  </div>
+                  <p className="text-[11px] text-zinc-500">
+                    Enter the 8-digit passcode sent to your official university email.
+                  </p>
                 </div>
 
                 <button
@@ -540,7 +530,7 @@ export default function Home() {
                   <span>{loading ? "Verifying..." : "Verify & Access Platform"}</span>
                 </button>
 
-                <div className="text-center">
+                <div className="flex items-center justify-between pt-1">
                   <button
                     type="button"
                     onClick={() => {
@@ -552,6 +542,16 @@ export default function Home() {
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Clear Digits</span>
                   </button>
+
+                  <a
+                    href="https://outlook.office.com/mail/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-[#FF6500] hover:text-[#E55B00] font-semibold transition cursor-pointer"
+                  >
+                    <span>Open LPU Outlook</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
                 </div>
 
               </form>
