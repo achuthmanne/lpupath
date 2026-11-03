@@ -13,7 +13,7 @@ export default function Home() {
   const [step, setStep] = useState<"email" | "otp">("email");
   const [transitionStage, setTransitionStage] = useState<"idle" | "exiting" | "entering">("idle");
   const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -119,15 +119,47 @@ export default function Home() {
     }, 380);
   };
 
-  const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) value = value.slice(-1);
+  const handlePasteDigits = (text: string, startIndex: number = 0) => {
+    const digits = text.replace(/\D/g, "").slice(0, otp.length);
+    if (!digits) return;
     const newOtp = [...otp];
-    newOtp[index] = value;
+    for (let i = 0; i < digits.length && (startIndex + i) < otp.length; i++) {
+      newOtp[startIndex + i] = digits[i];
+    }
+    setOtp(newOtp);
+    const targetFocus = Math.min(startIndex + digits.length, otp.length - 1);
+    const nextInput = document.getElementById(`otp-${targetFocus}`);
+    nextInput?.focus();
+  };
+
+  const handleOtpChange = (index: number, value: string) => {
+    const cleaned = value.replace(/\D/g, "");
+    if (!cleaned) {
+      const newOtp = [...otp];
+      newOtp[index] = "";
+      setOtp(newOtp);
+      return;
+    }
+
+    if (cleaned.length > 1) {
+      handlePasteDigits(cleaned, index);
+      return;
+    }
+
+    const newOtp = [...otp];
+    newOtp[index] = cleaned;
     setOtp(newOtp);
 
-    if (value && index < 5) {
+    if (cleaned && index < otp.length - 1) {
       const nextInput = document.getElementById(`otp-${index + 1}`);
       nextInput?.focus();
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      prevInput?.focus();
     }
   };
 
@@ -138,7 +170,7 @@ export default function Home() {
 
     const enteredToken = otp.join("").trim();
     if (enteredToken.length < 6) {
-      setError("Please enter the complete 6-digit verification code");
+      setError("Please enter the complete verification code");
       return;
     }
 
@@ -194,7 +226,7 @@ export default function Home() {
     setIsLoggedIn(false);
     setStep("email");
     setEmail("");
-    setOtp(["", "", "", "", "", ""]);
+    setOtp(["", "", "", "", "", "", "", ""]);
   };
 
   if (isLoggedIn) {
@@ -448,13 +480,13 @@ export default function Home() {
 
               </form>
             ) : (
-              /* STEP 2: 6-DIGIT OTP ENTRY */
+              /* STEP 2: 8-DIGIT OTP ENTRY */
               <form onSubmit={handleVerifyOtp} className="space-y-6">
                 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-zinc-300 uppercase tracking-wider block">
-                      6-Digit Security OTP
+                      Verification Passcode
                     </label>
                     <button
                       type="button"
@@ -465,23 +497,39 @@ export default function Home() {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-6 gap-2 sm:gap-2.5">
+                  <div className="grid grid-cols-8 gap-1.5 sm:gap-2">
                     {otp.map((digit, idx) => (
                       <input
                         key={idx}
                         id={`otp-${idx}`}
                         type="text"
+                        inputMode="numeric"
                         maxLength={1}
                         value={digit}
                         onChange={(e) => handleOtpChange(idx, e.target.value)}
-                        className="w-full h-12 sm:h-14 text-center text-xl font-bold bg-zinc-900 border border-zinc-700/80 rounded-2xl text-white focus:outline-none focus:border-white/40 transition"
+                        onKeyDown={(e) => handleKeyDown(idx, e)}
+                        onPaste={(e) => {
+                          e.preventDefault();
+                          handlePasteDigits(e.clipboardData.getData("text"), idx);
+                        }}
+                        className="w-full h-11 sm:h-13 text-center text-lg sm:text-xl font-bold bg-zinc-900 border border-zinc-700/80 rounded-xl sm:rounded-2xl text-white focus:outline-none focus:border-white/40 transition"
                       />
                     ))}
                   </div>
 
-                  <p className="text-[11px] text-zinc-500">
-                    Enter the 6-digit one-time password sent to your inbox.
-                  </p>
+                  <div className="flex items-center justify-between pt-1">
+                    <p className="text-[11px] text-zinc-500">
+                      Enter the 8-digit code sent to your Outlook.
+                    </p>
+                    <a
+                      href="https://outlook.office.com/mail/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-[#FF6500] hover:underline font-semibold inline-flex items-center gap-1"
+                    >
+                      Open Outlook Web &rarr;
+                    </a>
+                  </div>
                 </div>
 
                 <button
@@ -496,7 +544,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => {
-                      setOtp(["", "", "", "", "", ""]);
+                      setOtp(["", "", "", "", "", "", "", ""]);
                       setError("");
                     }}
                     className="text-xs text-zinc-400 hover:text-white inline-flex items-center gap-1.5 transition cursor-pointer"
