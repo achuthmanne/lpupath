@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { createClient } from "@/lib/supabase/client";
-import { Mail, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck, ArrowUpRight, HelpCircle, X } from "lucide-react";
+import { Mail, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck, ArrowUpRight, X } from "lucide-react";
 
 export default function Home() {
   const [supabase] = useState(() => createClient());
@@ -570,7 +570,7 @@ export default function Home() {
                     href="https://outlook.office.com/mail/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-[#FF6500] hover:text-[#E55B00] font-semibold transition cursor-pointer"
+                    className="inline-flex items-center gap-1 text-xs text-[#0078D4] hover:text-[#2899f5] font-semibold transition cursor-pointer"
                   >
                     <span>Open LPU Outlook</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -584,7 +584,6 @@ export default function Home() {
                     onClick={() => setShowHelpModal(true)}
                     className="text-xs text-zinc-400 hover:text-white transition inline-flex items-center gap-1.5 cursor-pointer group"
                   >
-                    <HelpCircle className="w-3.5 h-3.5 text-[#FF6500]" />
                     <span>Didn&apos;t find your code?</span>
                     <span className="text-[#FF6500] group-hover:underline font-semibold">View Guide &rarr;</span>
                   </button>
@@ -679,7 +678,7 @@ export default function Home() {
                 href="https://outlook.office.com/mail/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-2.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-xs font-bold rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-2.5 bg-[#0078D4] hover:bg-[#006CBE] text-white text-xs font-bold rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <span>Open LPU Outlook Web</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
