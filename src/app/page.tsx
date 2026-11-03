@@ -17,6 +17,17 @@ export default function Home() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [cooldown, setCooldown] = useState(0);
+
+  // Cooldown countdown timer for resending OTP
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const interval = setInterval(() => {
+      setCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [cooldown]);
 
   useEffect(() => {
     // Check if student already has active session
@@ -86,6 +97,9 @@ export default function Home() {
         return;
       }
 
+      setCooldown(60);
+      setSuccessMessage("");
+
       // Slide current form out to RIGHT
       setTransitionStage("exiting");
 
@@ -108,6 +122,8 @@ export default function Home() {
   // Handle Back to Email with smooth transition
   const handleBackToEmail = () => {
     setError("");
+    setSuccessMessage("");
+    setOtp(["", "", "", "", "", "", "", ""]);
     setTransitionStage("exiting");
 
     setTimeout(() => {
@@ -232,9 +248,10 @@ export default function Home() {
 
   // Handle Resend Verification Code from Guide Modal
   const handleResendCode = async () => {
-    if (!email) return;
+    if (!email || loading || cooldown > 0) return;
     setLoading(true);
     setError("");
+    setSuccessMessage("");
     try {
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email: email.trim().toLowerCase(),
@@ -244,7 +261,10 @@ export default function Home() {
       if (otpError) {
         setError(otpError.message);
       } else {
+        setOtp(["", "", "", "", "", "", "", ""]);
+        setSuccessMessage("Fresh 8-digit verification code sent to your Outlook!");
         setShowHelpModal(false);
+        setCooldown(60);
       }
     } catch {
       setLoading(false);
@@ -461,6 +481,23 @@ export default function Home() {
             {error && (
               <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
                 {error}
+              </div>
+            )}
+
+            {/* Success Message (Resent Code Feedback) */}
+            {successMessage && (
+              <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                  <span>{successMessage}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSuccessMessage("")}
+                  className="text-emerald-400 hover:text-white text-xs ml-2 cursor-pointer font-bold"
+                >
+                  ✕
+                </button>
               </div>
             )}
 
@@ -754,10 +791,14 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={handleResendCode}
-                  disabled={loading}
-                  className="flex-1 py-2.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-xs font-bold rounded-full transition cursor-pointer disabled:opacity-50"
+                  disabled={loading || cooldown > 0}
+                  className="flex-1 py-2.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-xs font-bold rounded-full transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? "Resending..." : "Resend Passcode"}
+                  {loading
+                    ? "Resending..."
+                    : cooldown > 0
+                    ? `Resend in ${cooldown}s`
+                    : "Resend Passcode"}
                 </button>
               </div>
 
