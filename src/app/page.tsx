@@ -287,7 +287,7 @@ export default function Home() {
   if (isLoggedIn) {
     return (
       <div className="min-h-screen bg-white text-[#111111] flex flex-col">
-        <Navbar />
+        <Navbar userEmail={email} onSignOut={handleSignOut} />
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-10">
           <div className="p-8 rounded-2xl border border-[#E4E4E7] bg-[#FAFAFA] flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>

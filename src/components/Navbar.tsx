@@ -3,9 +3,16 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
-export default function Navbar() {
+interface NavbarProps {
+  userEmail?: string;
+  onSignOut?: () => void;
+}
+
+export default function Navbar({ userEmail: propUserEmail, onSignOut }: NavbarProps = {}) {
   const [animating, setAnimating] = useState(false);
+  const [currentEmail, setCurrentEmail] = useState(propUserEmail || "");
 
   useEffect(() => {
     // Smooth entrance trigger on mount
@@ -14,6 +21,24 @@ export default function Navbar() {
     }, 150);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (propUserEmail) {
+      setCurrentEmail(propUserEmail);
+      return;
+    }
+
+    try {
+      const supabase = createClient();
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user?.email) {
+          setCurrentEmail(session.user.email);
+        }
+      });
+    } catch (err) {
+      console.error("Navbar session check error:", err);
+    }
+  }, [propUserEmail]);
 
   return (
     <header className="w-full bg-white border-b border-[#E4E4E7]">
@@ -98,10 +123,30 @@ export default function Navbar() {
 
         </Link>
 
-        {/* Right side is intentionally empty - ready for user direction */}
-        <div className="flex items-center">
-          {/* Waiting for next instructions */}
-        </div>
+        {/* Right side: Signed in user details */}
+        {currentEmail ? (
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="text-right flex flex-col justify-center">
+              <span className="text-[10px] sm:text-[11px] font-medium text-[#71717A] leading-tight">
+                Signed in as
+              </span>
+              <span className="text-xs sm:text-[13px] font-bold text-[#111111] leading-tight truncate max-w-[170px] sm:max-w-[280px]">
+                {currentEmail}
+              </span>
+            </div>
+            {onSignOut && (
+              <button
+                type="button"
+                onClick={onSignOut}
+                className="px-3 py-1.5 text-xs font-semibold text-[#71717A] hover:text-[#111111] hover:bg-[#F4F4F5] border border-[#E4E4E7] rounded-full transition cursor-pointer"
+              >
+                Sign Out
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center" />
+        )}
 
       </div>
     </header>
