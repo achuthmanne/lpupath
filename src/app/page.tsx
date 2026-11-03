@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import StudentLandingPage from "@/components/StudentLandingPage";
 import Turnstile, { TurnstileRef } from "@/components/Turnstile";
 import { createClient } from "@/lib/supabase/client";
 import { Mail, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck, ArrowUpRight, X } from "lucide-react";
@@ -285,33 +286,7 @@ export default function Home() {
   };
 
   if (isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-white text-[#111111] flex flex-col">
-        <Navbar userEmail={email} onSignOut={handleSignOut} />
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-10">
-          <div className="p-8 rounded-2xl border border-[#E4E4E7] bg-[#FAFAFA] flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200 mb-2">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                Verified Student Access
-              </div>
-              <h1 className="text-2xl font-black text-[#111111]">
-                Welcome to LPU PATH
-              </h1>
-              <p className="text-sm text-[#71717A] mt-1">
-                Signed in as <span className="font-semibold text-[#111111]">{email}</span>
-              </p>
-            </div>
-            <button
-              onClick={handleSignOut}
-              className="px-4 py-2 text-xs font-semibold text-[#71717A] hover:text-red-600 hover:border-red-300 hover:bg-red-50 bg-white border border-[#E4E4E7] rounded-xl transition cursor-pointer"
-            >
-              Sign Out
-            </button>
-          </div>
-        </main>
-      </div>
-    );
+    return <StudentLandingPage email={email} onSignOut={handleSignOut} />;
   }
 
   const getSlideClass = () => {
