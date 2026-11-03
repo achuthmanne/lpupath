@@ -617,7 +617,7 @@ export default function Home() {
             {/* Modal Header */}
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1">
-                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/30">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-transparent border border-sky-500/40">
                   <Image
                     src="/defender-shield.png"
                     alt="Microsoft Defender"
@@ -645,33 +645,33 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Direct Quarantine Portal Hero Button */}
+            {/* Direct Quarantine Portal Hero Button (Only Blue Border, No BG) */}
             <a
               href="https://security.microsoft.com/quarantine"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3 px-4 bg-[#0078D4] hover:bg-[#006CBE] text-white rounded-xl transition flex items-center justify-between group cursor-pointer border border-sky-400/40"
+              className="w-full py-3 px-4 bg-transparent hover:bg-zinc-900/70 text-white rounded-xl transition flex items-center justify-between group cursor-pointer border border-[#0078D4] hover:border-sky-400"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
                   <Image
                     src="/defender-shield.png"
                     alt="Microsoft Defender"
-                    width={22}
-                    height={22}
-                    className="w-5.5 h-5.5 object-contain"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5 object-contain"
                   />
                 </div>
                 <div className="text-left">
                   <div className="text-xs font-bold text-white flex items-center gap-1.5">
                     <span>Open Microsoft Quarantine Portal</span>
                   </div>
-                  <div className="text-[11px] text-sky-100 font-mono">
+                  <div className="text-[11px] text-zinc-400 font-mono group-hover:text-zinc-300">
                     security.microsoft.com/quarantine
                   </div>
                 </div>
               </div>
-              <ArrowUpRight className="w-4 h-4 text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
+              <ArrowUpRight className="w-4 h-4 text-[#0078D4] group-hover:text-sky-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
             </a>
 
             {/* Step-by-Step Instructions */}
@@ -679,7 +679,7 @@ export default function Home() {
               
               {/* Step 1 */}
               <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                <span className="w-5 h-5 rounded-full bg-[#0078D4] text-white font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full border border-[#0078D4]/70 text-sky-400 font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
                   1
                 </span>
                 <div className="space-y-0.5">
@@ -692,7 +692,7 @@ export default function Home() {
 
               {/* Step 2 */}
               <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                <span className="w-5 h-5 rounded-full bg-[#0078D4] text-white font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full border border-[#0078D4]/70 text-sky-400 font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
                   2
                 </span>
                 <div className="space-y-0.5">
@@ -705,7 +705,7 @@ export default function Home() {
 
               {/* Step 3 */}
               <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                <span className="w-5 h-5 rounded-full bg-[#0078D4] text-white font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full border border-[#0078D4]/70 text-sky-400 font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
                   3
                 </span>
                 <div className="space-y-1">
@@ -725,7 +725,7 @@ export default function Home() {
 
               {/* Step 4 */}
               <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                <span className="w-5 h-5 rounded-full bg-[#0078D4] text-white font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full border border-[#0078D4]/70 text-sky-400 font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
                   4
                 </span>
                 <div className="space-y-0.5">
