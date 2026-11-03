@@ -49,7 +49,12 @@ export default function Home() {
       return;
     }
 
-    const isLpu = trimmed.endsWith("@lpu.in") || trimmed.endsWith("@lpu.co.in");
+    // Allow official LPU domains, and project developer email for testing
+    const isLpu = 
+      trimmed.endsWith("@lpu.in") || 
+      trimmed.endsWith("@lpu.co.in") || 
+      trimmed === "achuthchowdary96@gmail.com";
+
     if (!isLpu) {
       setError("Only official university emails ending in @lpu.in are allowed");
       return;
@@ -221,7 +226,7 @@ export default function Home() {
         
         {/* Top Label */}
         <div className="flex items-center gap-2.5">
-          <div className="w-[3px] h-4 bg-[#FF6500] rounded-full flex-shrink-0" />
+          <div className="w-0.75 h-4 bg-[#FF6500] rounded-full shrink-0" />
           <span className="text-xs font-bold uppercase tracking-widest text-[#111111]">
             Placement Intelligence Platform
           </span>
@@ -235,7 +240,7 @@ export default function Home() {
             
             {/* 1. Logo Mark (Icon) */}
             <div
-              className={`flex-shrink-0 flex items-center transition-all duration-700 ease-out ${
+              className={`shrink-0 flex items-center transition-all duration-700 ease-out ${
                 animating
                   ? "opacity-100 scale-100 translate-x-0"
                   : "opacity-0 scale-90 -translate-x-3"
@@ -246,7 +251,7 @@ export default function Home() {
                 alt="LPU PATH Logo"
                 width={88}
                 height={76}
-                className="h-[58px] sm:h-[76px] w-auto object-contain block"
+                className="h-14.5 sm:h-19 w-auto object-contain block"
                 priority
               />
             </div>
@@ -257,7 +262,7 @@ export default function Home() {
                 transitionDuration: "500ms",
                 transitionDelay: "100ms",
               }}
-              className={`w-[2.5px] sm:w-[3.5px] h-[58px] sm:h-[76px] bg-[#111111] rounded-full flex-shrink-0 origin-center transition-all ease-out ${
+              className={`w-[2.5px] sm:w-[3.5px] h-14.5 sm:h-19 bg-[#111111] rounded-full shrink-0 origin-center transition-all ease-out ${
                 animating
                   ? "opacity-100 scale-y-100"
                   : "opacity-0 scale-y-0"
@@ -265,14 +270,14 @@ export default function Home() {
             />
 
             {/* 3. Masked Container - Slit Reveal */}
-            <div className="overflow-hidden h-[58px] sm:h-[76px] flex items-center pl-1.5 pr-2">
+            <div className="overflow-hidden h-14.5 sm:h-19 flex items-center pl-1.5 pr-2">
               <div
                 style={{
                   transitionDuration: "850ms",
                   transitionDelay: "220ms",
                   transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
-                className={`h-[58px] sm:h-[76px] flex flex-col justify-between py-[1.5px] transition-all ${
+                className={`h-14.5 sm:h-19 flex flex-col justify-between py-[1.5px] transition-all ${
                   animating
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 -translate-x-full"

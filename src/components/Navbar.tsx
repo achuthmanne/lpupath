@@ -25,7 +25,7 @@ export default function Navbar() {
           
           {/* 1. Logo Mark (Cap & Orange Arrow) - Exact 36px Height */}
           <div
-            className={`flex-shrink-0 flex items-center transition-all duration-700 ease-out ${
+            className={`shrink-0 flex items-center transition-all duration-700 ease-out ${
               animating
                 ? "opacity-100 scale-100 translate-x-0"
                 : "opacity-0 scale-90 -translate-x-2"
@@ -47,7 +47,7 @@ export default function Navbar() {
               transitionDuration: "500ms",
               transitionDelay: "100ms",
             }}
-            className={`w-[1.75px] sm:w-[2px] h-[32px] sm:h-[36px] bg-[#111111] rounded-full flex-shrink-0 origin-center transition-all ease-out ${
+            className={`w-[1.75px] sm:w-[2px] h-[32px] sm:h-[36px] bg-[#111111] rounded-full shrink-0 origin-center transition-all ease-out ${
               animating
                 ? "opacity-100 scale-y-100"
                 : "opacity-0 scale-y-0"
