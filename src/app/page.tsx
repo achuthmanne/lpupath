@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import Turnstile, { TurnstileRef } from "@/components/Turnstile";
 import { createClient } from "@/lib/supabase/client";
 import { Mail, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck, ArrowUpRight, X } from "lucide-react";
 
@@ -19,6 +20,8 @@ export default function Home() {
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [cooldown, setCooldown] = useState(0);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileRef = useRef<TurnstileRef>(null);
 
   // Cooldown countdown timer for resending OTP
   useEffect(() => {
@@ -83,17 +86,20 @@ export default function Home() {
     setLoading(true);
 
     try {
-      // Trigger Supabase Email OTP
+      // Trigger Supabase Email OTP (with Cloudflare Turnstile token if available)
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email: trimmed,
         options: {
           shouldCreateUser: true,
+          ...(captchaToken ? { captchaToken } : {}),
         },
       });
 
       if (otpError) {
         setLoading(false);
         setError(otpError.message);
+        turnstileRef.current?.reset();
+        setCaptchaToken("");
         return;
       }
 
@@ -124,6 +130,8 @@ export default function Home() {
     setError("");
     setSuccessMessage("");
     setOtp(["", "", "", "", "", "", "", ""]);
+    setCaptchaToken("");
+    turnstileRef.current?.reset();
     setTransitionStage("exiting");
 
     setTimeout(() => {
@@ -527,6 +535,17 @@ export default function Home() {
                       </span>
                     </div>
                   </div>
+                </div>
+
+                {/* Cloudflare Turnstile Automatic Verification */}
+                <div className="flex justify-center min-h-[65px] items-center">
+                  <Turnstile
+                    ref={turnstileRef}
+                    onVerify={(token) => setCaptchaToken(token)}
+                    onExpire={() => setCaptchaToken("")}
+                    onError={() => setCaptchaToken("")}
+                    theme="dark"
+                  />
                 </div>
 
                 {/* Orange Action CTA Button */}
