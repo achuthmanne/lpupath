@@ -447,17 +447,17 @@ export default function Home() {
       {/* ============================================================== */}
       {/* 2. RIGHT SIDE: CURVED BLACK PANEL WITH REAL SUPABASE AUTH     */}
       {/* ============================================================== */}
-      <div className="relative w-full lg:w-[52%] h-full flex items-center justify-center p-6 sm:p-12 lg:p-16 z-10 overflow-hidden">
+      <div className="relative w-full lg:w-[52%] h-full flex items-center justify-center p-6 sm:p-12 lg:p-16 z-10 overflow-hidden lg:overflow-visible">
         
         {/* DESKTOP CURVED BLACK BACKGROUND SVG */}
-        <div className="hidden lg:block absolute inset-0 pointer-events-none">
+        <div className="hidden lg:block absolute inset-0 pointer-events-none overflow-visible">
           <svg
-            className="w-full h-full"
+            className="w-full h-full overflow-visible"
             viewBox="0 0 500 1000"
             preserveAspectRatio="none"
           >
             <path
-              d="M 0,0 C 76,320 76,680 0,1000 L 500,1000 L 500,0 Z"
+              d="M -35,0 C 46,320 76,680 0,1000 L 500,1000 L 500,0 Z"
               fill="#E4E4E7"
             />
             <path
