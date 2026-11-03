@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
-import { Mail, KeyRound, ArrowRight, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { Mail, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck } from "lucide-react";
 
 export default function Home() {
+  const [supabase] = useState(() => createClient());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [animating, setAnimating] = useState(false);
   const [step, setStep] = useState<"email" | "otp">("email");
@@ -16,14 +18,28 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Check if student already has active session
+    const checkActiveSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user?.email) {
+          setEmail(session.user.email);
+          setIsLoggedIn(true);
+        }
+      } catch (err) {
+        console.error("Session check error:", err);
+      }
+    };
+    checkActiveSession();
+
     const timer = setTimeout(() => {
       setAnimating(true);
     }, 200);
     return () => clearTimeout(timer);
-  }, []);
+  }, [supabase]);
 
-  // Handle Send OTP with Right-Exit & Curve-Entrance Animation
-  const handleSendOtp = (e: React.FormEvent) => {
+  // Handle Real Supabase OTP Delivery
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -41,23 +57,41 @@ export default function Home() {
 
     setLoading(true);
 
-    // Step 1: Slide current form out to the RIGHT
-    setTransitionStage("exiting");
+    try {
+      // Trigger Supabase Email OTP
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: trimmed,
+        options: {
+          shouldCreateUser: true,
+        },
+      });
 
-    setTimeout(() => {
-      // Step 2: Switch to OTP, set initial position coming out from the CURVE (left side)
-      setStep("otp");
-      setLoading(false);
-      setTransitionStage("entering");
+      if (otpError) {
+        setLoading(false);
+        setError(otpError.message);
+        return;
+      }
 
-      // Step 3: Slide in smoothly to center
+      // Slide current form out to RIGHT
+      setTransitionStage("exiting");
+
       setTimeout(() => {
-        setTransitionStage("idle");
-      }, 50);
-    }, 380);
+        setStep("otp");
+        setLoading(false);
+        setTransitionStage("entering");
+
+        setTimeout(() => {
+          setTransitionStage("idle");
+        }, 50);
+      }, 380);
+    } catch (err: unknown) {
+      setLoading(false);
+      const msg = err instanceof Error ? err.message : "Failed to send verification code";
+      setError(msg);
+    }
   };
 
-  // Handle Back to Email with same smooth transition
+  // Handle Back to Email with smooth transition
   const handleBackToEmail = () => {
     setError("");
     setTransitionStage("exiting");
@@ -84,19 +118,57 @@ export default function Home() {
     }
   };
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  // Handle Real Supabase OTP Verification
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const entered = otp.join("");
-    if (entered.length < 6) {
+    setError("");
+
+    const enteredToken = otp.join("").trim();
+    if (enteredToken.length < 6) {
       setError("Please enter the complete 6-digit verification code");
       return;
     }
 
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+        email: email.trim().toLowerCase(),
+        token: enteredToken,
+        type: "email",
+      });
+
+      if (verifyError) {
+        setLoading(false);
+        setError(verifyError.message || "Invalid or expired verification code");
+        return;
+      }
+
+      if (data.session) {
+        setLoading(false);
+        setIsLoggedIn(true);
+      } else {
+        setLoading(false);
+        setError("Verification succeeded but no session was created. Please try again.");
+      }
+    } catch (err: unknown) {
       setLoading(false);
-      setIsLoggedIn(true);
-    }, 800);
+      const msg = err instanceof Error ? err.message : "Verification failed";
+      setError(msg);
+    }
+  };
+
+  // Handle Sign Out
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("Sign out error:", err);
+    }
+    setIsLoggedIn(false);
+    setStep("email");
+    setEmail("");
+    setOtp(["", "", "", "", "", ""]);
   };
 
   if (isLoggedIn) {
@@ -118,12 +190,7 @@ export default function Home() {
               </p>
             </div>
             <button
-              onClick={() => {
-                setIsLoggedIn(false);
-                setStep("email");
-                setEmail("");
-                setOtp(["", "", "", "", "", ""]);
-              }}
+              onClick={handleSignOut}
               className="px-4 py-2 text-xs font-semibold text-[#71717A] hover:text-[#111111] bg-white border border-[#E4E4E7] rounded-xl transition cursor-pointer"
             >
               Sign Out
@@ -134,7 +201,6 @@ export default function Home() {
     );
   }
 
-  // Calculate slide class for transition
   const getSlideClass = () => {
     if (transitionStage === "exiting") {
       return "translate-x-[110%] opacity-0 pointer-events-none";
@@ -153,7 +219,7 @@ export default function Home() {
       {/* ============================================================== */}
       <div className="w-full lg:w-[48%] h-full flex flex-col justify-between p-8 sm:p-14 lg:p-20 z-10">
         
-        {/* Top Label: Sleek Orange Vertical Stick + Crisp Text */}
+        {/* Top Label */}
         <div className="flex items-center gap-2.5">
           <div className="w-[3px] h-4 bg-[#FF6500] rounded-full flex-shrink-0" />
           <span className="text-xs font-bold uppercase tracking-widest text-[#111111]">
@@ -242,7 +308,7 @@ export default function Home() {
 
           </div>
 
-          {/* MATTER UNDERNEATH (Pure Clean Typography - High Contrast, Deep Sharp Font) */}
+          {/* MATTER UNDERNEATH (Pure Clean Typography) */}
           <div className="space-y-3 pt-4 border-t border-[#E4E4E7] max-w-xl">
             <h3 className="text-xl sm:text-2xl font-extrabold text-[#111111] tracking-tight">
               On-campus Placement Intelligence Platform
@@ -257,7 +323,7 @@ export default function Home() {
 
         </div>
 
-        {/* Bottom Trust Badge (Student GraduationCap Icon) */}
+        {/* Bottom Trust Badge */}
         <div className="flex items-center gap-2 text-xs text-[#27272A] font-semibold">
           <GraduationCap className="w-4 h-4 text-[#FF6500]" />
           <span>Exclusively for verified LPU student accounts</span>
@@ -266,23 +332,21 @@ export default function Home() {
       </div>
 
       {/* ============================================================== */}
-      {/* 2. RIGHT SIDE: CURVED BLACK PANEL WITH THE SLIDE TRANSITION    */}
+      {/* 2. RIGHT SIDE: CURVED BLACK PANEL WITH REAL SUPABASE AUTH     */}
       {/* ============================================================== */}
       <div className="relative w-full lg:w-[52%] h-full flex items-center justify-center p-6 sm:p-12 lg:p-16 z-10 overflow-hidden">
         
-        {/* DESKTOP CURVED BLACK BACKGROUND SVG (Anchored Doorway/Stage) */}
+        {/* DESKTOP CURVED BLACK BACKGROUND SVG */}
         <div className="hidden lg:block absolute inset-0 pointer-events-none">
           <svg
             className="w-full h-full"
             viewBox="0 0 500 1000"
             preserveAspectRatio="none"
           >
-            {/* Layer 1: Subtle grey contour shadow along curve */}
             <path
               d="M 0,0 C 76,320 76,680 0,1000 L 500,1000 L 500,0 Z"
               fill="#E4E4E7"
             />
-            {/* Layer 2: Main Solid Black (#111111) Curved Panel */}
             <path
               d="M 6,0 C 82,320 82,680 6,1000 L 500,1000 L 500,0 Z"
               fill="#111111"
@@ -293,9 +357,7 @@ export default function Home() {
         {/* MOBILE FALLBACK */}
         <div className="lg:hidden absolute inset-0 bg-[#111111] rounded-3xl" />
 
-        {/* ============================================================ */}
-        {/* THE SLIDING CONTAINER: Slides right on exit, enters from curve */}
-        {/* ============================================================ */}
+        {/* THE SLIDING FORM CONTAINER */}
         <div className="relative z-20 w-full max-w-lg lg:max-w-xl lg:pl-14 lg:pr-4 overflow-hidden py-4">
           
           <div
@@ -339,6 +401,7 @@ export default function Home() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="universitymail@lpu.in"
                       className="w-full pl-11 pr-24 py-3.5 bg-zinc-900 border border-zinc-700/80 rounded-full text-sm text-white placeholder-zinc-500 outline-none focus:outline-none focus:ring-0 focus:border-white/30 transition-colors"
+                      required
                     />
                     <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
                       <span className="text-[11px] font-bold text-zinc-300 bg-zinc-800 px-2.5 py-1 rounded-full border border-zinc-700">
@@ -348,13 +411,13 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Orange Action CTA Button (Text Only, No Icons) */}
+                {/* Orange Action CTA Button */}
                 <button
                   type="submit"
                   disabled={loading}
                   className="w-full py-3.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-sm font-bold rounded-full transition flex items-center justify-center cursor-pointer disabled:opacity-50"
                 >
-                  <span>{loading ? "Sending One-Time Password..." : "Send Verification Code"}</span>
+                  <span>{loading ? "Sending OTP Code..." : "Send Verification Code"}</span>
                 </button>
 
               </form>
@@ -391,7 +454,7 @@ export default function Home() {
                   </div>
 
                   <p className="text-[11px] text-zinc-500">
-                    Verification code expires in 10 minutes.
+                    Enter the 6-digit one-time password sent to your inbox.
                   </p>
                 </div>
 
@@ -400,7 +463,7 @@ export default function Home() {
                   disabled={loading}
                   className="w-full py-3.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-sm font-bold rounded-full transition flex items-center justify-center cursor-pointer disabled:opacity-50"
                 >
-                  <span>{loading ? "Verifying Session..." : "Verify & Access Platform"}</span>
+                  <span>{loading ? "Verifying..." : "Verify & Access Platform"}</span>
                 </button>
 
                 <div className="text-center">
