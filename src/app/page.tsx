@@ -582,10 +582,10 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => setShowHelpModal(true)}
-                    className="text-xs text-zinc-400 hover:text-white transition inline-flex items-center gap-1.5 cursor-pointer group"
+                    className="text-xs text-zinc-200 hover:text-white transition inline-flex items-center gap-1.5 cursor-pointer font-medium"
                   >
                     <span>Didn&apos;t find your code?</span>
-                    <span className="text-[#FF6500] group-hover:underline font-semibold">View Guide &rarr;</span>
+                    <span className="text-[#FF6500] hover:text-[#FF8533] underline underline-offset-4 font-bold transition">View Guide</span>
                   </button>
                 </div>
 
@@ -608,99 +608,166 @@ export default function Home() {
       </div>
 
       {/* ============================================================== */}
-      {/* 3. LPU OUTLOOK VERIFICATION CODE GUIDE MODAL                   */}
+      {/* 3. MICROSOFT DEFENDER QUARANTINE RELEASE GUIDE MODAL           */}
       {/* ============================================================== */}
       {showHelpModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-md bg-[#161616] border border-zinc-800 rounded-2xl p-6 sm:p-7 text-white shadow-2xl space-y-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
+          <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto bg-[#161616] border border-zinc-800 rounded-2xl p-6 sm:p-7 text-white shadow-2xl space-y-5">
             
             {/* Modal Header */}
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between gap-4">
               <div className="space-y-1">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF6500]/10 border border-[#FF6500]/30 text-[10px] font-bold text-[#FF6500] uppercase tracking-wider">
-                  Outlook Guide
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-sky-500/10 border border-sky-500/30">
+                  <Image
+                    src="/defender-shield.png"
+                    alt="Microsoft Defender"
+                    width={18}
+                    height={18}
+                    className="w-4 h-4 object-contain"
+                  />
+                  <span className="text-[10.5px] font-bold text-sky-400 uppercase tracking-wider">
+                    Microsoft Quarantine Guide
+                  </span>
                 </div>
-                <h3 className="text-lg font-bold text-white tracking-tight">
-                  Finding Your Code in LPU Outlook
+                <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight pt-1">
+                  Releasing Your Code from Quarantine
                 </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  LPU email filters temporarily hold external automated emails in Microsoft Defender Quarantine. Follow these steps to release your verification code in 30 seconds:
+                </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowHelpModal(false)}
-                className="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-zinc-800 transition cursor-pointer"
+                className="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-zinc-800 transition cursor-pointer shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {/* Direct Quarantine Portal Hero Button */}
+            <a
+              href="https://security.microsoft.com/quarantine"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 px-4 bg-[#0078D4] hover:bg-[#006CBE] text-white rounded-xl transition flex items-center justify-between group cursor-pointer border border-sky-400/40"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                  <Image
+                    src="/defender-shield.png"
+                    alt="Microsoft Defender"
+                    width={22}
+                    height={22}
+                    className="w-5.5 h-5.5 object-contain"
+                  />
+                </div>
+                <div className="text-left">
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span>Open Microsoft Quarantine Portal</span>
+                  </div>
+                  <div className="text-[11px] text-sky-100 font-mono">
+                    security.microsoft.com/quarantine
+                  </div>
+                </div>
+              </div>
+              <ArrowUpRight className="w-4 h-4 text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
+            </a>
+
             {/* Step-by-Step Instructions */}
-            <div className="space-y-3 text-xs">
+            <div className="space-y-2.5 text-xs">
+              
+              {/* Step 1 */}
               <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                <span className="w-5 h-5 rounded-full bg-[#FF6500] text-black font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-[#0078D4] text-white font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
                   1
                 </span>
                 <div className="space-y-0.5">
-                  <div className="font-bold text-white">Check the &quot;Other&quot; Tab</div>
+                  <div className="font-bold text-white">Click Portal Link &amp; Sign In</div>
                   <p className="text-zinc-400 leading-relaxed text-[11.5px]">
-                    LPU Outlook separates incoming emails into <strong>Focused</strong> and <strong>Other</strong>. Automated codes land directly in the <strong>Other</strong> tab.
+                    Open the link above. It will automatically log in with your saved LPU university Microsoft account.
                   </p>
                 </div>
               </div>
 
+              {/* Step 2 */}
               <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                <span className="w-5 h-5 rounded-full bg-[#FF6500] text-black font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-[#0078D4] text-white font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
                   2
                 </span>
                 <div className="space-y-0.5">
-                  <div className="font-bold text-white">Inspect &quot;Junk Email&quot; Folder</div>
+                  <div className="font-bold text-white">Select LPU PATH Email</div>
                   <p className="text-zinc-400 leading-relaxed text-[11.5px]">
-                    If not in Other, check the <strong>Junk Email</strong> folder in your Outlook left folder list.
+                    In your Quarantine messages table, locate and click the email from <strong className="text-white">verify@lpupath.online</strong> (Sender: <em>LPU PATH</em>).
                   </p>
                 </div>
               </div>
 
+              {/* Step 3 */}
               <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                <span className="w-5 h-5 rounded-full bg-[#FF6500] text-black font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-[#0078D4] text-white font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
                   3
                 </span>
-                <div className="space-y-0.5">
-                  <div className="font-bold text-white">Search &quot;lpupath.online&quot;</div>
+                <div className="space-y-1">
+                  <div className="font-bold text-white">Click &quot;Release message&quot; &amp; Check Threat Box</div>
                   <p className="text-zinc-400 leading-relaxed text-[11.5px]">
-                    Search <code>lpupath.online</code> or <code>verify@lpupath.online</code> in the Outlook top search bar to locate the email instantly across all folders.
+                    Click the <strong>Release message</strong> button at the top. On the panel that opens, tick the checkbox:
+                  </p>
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-zinc-800/90 border border-zinc-700/80 text-[11px] text-emerald-400 font-medium">
+                    <span>☑</span>
+                    <span className="text-white font-semibold">Report message having no threats</span>
+                  </div>
+                  <p className="text-zinc-400 text-[11px]">
+                    Then click the blue <strong>Release message</strong> button at the bottom.
                   </p>
                 </div>
               </div>
+
+              {/* Step 4 */}
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
+                <span className="w-5 h-5 rounded-full bg-[#0078D4] text-white font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                  4
+                </span>
+                <div className="space-y-0.5">
+                  <div className="font-bold text-white">Click &quot;Done&quot; &amp; Open Outlook Inbox</div>
+                  <p className="text-zinc-400 leading-relaxed text-[11.5px]">
+                    You will see a success notification: <em>&quot;Messages released to your inbox&quot;</em>. Click <strong>Done</strong>. Your 8-digit verification code will now appear directly in your regular Outlook Inbox!
+                  </p>
+                </div>
+              </div>
+
             </div>
 
             {/* Modal Actions */}
-            <div className="space-y-2.5 pt-1">
-              <a
-                href="https://outlook.office.com/mail/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-2.5 bg-[#0078D4] hover:bg-[#006CBE] text-white text-xs font-bold rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <span>Open LPU Outlook Web</span>
-                <ArrowUpRight className="w-3.5 h-3.5" />
-              </a>
-
+            <div className="space-y-2 pt-1 border-t border-zinc-800/80">
               <div className="flex items-center gap-2">
+                <a
+                  href="https://outlook.office.com/mail/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 text-white text-xs font-semibold rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Open LPU Outlook</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-sky-400" />
+                </a>
+
                 <button
                   type="button"
                   onClick={handleResendCode}
                   disabled={loading}
-                  className="flex-1 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 text-white text-xs font-semibold rounded-full transition cursor-pointer disabled:opacity-50"
+                  className="flex-1 py-2.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-xs font-bold rounded-full transition cursor-pointer disabled:opacity-50"
                 >
                   {loading ? "Resending..." : "Resend Passcode"}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setShowHelpModal(false)}
-                  className="px-5 py-2.5 bg-transparent hover:bg-zinc-800 text-zinc-400 hover:text-white text-xs font-medium rounded-full transition cursor-pointer"
-                >
-                  Close
-                </button>
               </div>
+
+              <button
+                type="button"
+                onClick={() => setShowHelpModal(false)}
+                className="w-full py-2 bg-transparent hover:bg-zinc-900 text-zinc-400 hover:text-white text-xs font-medium rounded-full transition cursor-pointer"
+              >
+                Close Guide
+              </button>
             </div>
 
           </div>
