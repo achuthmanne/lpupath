@@ -541,17 +541,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Cloudflare Turnstile Automatic Verification */}
-                <div className="flex justify-center min-h-[65px] items-center">
-                  <Turnstile
-                    ref={turnstileRef}
-                    onVerify={handleTurnstileVerify}
-                    onExpire={() => setCaptchaToken("")}
-                    onError={() => setCaptchaToken("")}
-                    theme="dark"
-                  />
-                </div>
-
                 {/* Orange Action CTA Button */}
                 <button
                   type="submit"
@@ -560,6 +549,17 @@ export default function Home() {
                 >
                   <span>{loading ? "Sending OTP Code..." : "Send Verification Code"}</span>
                 </button>
+
+                {/* Cloudflare Turnstile Automatic Verification (Below Button) */}
+                <div className="flex justify-center min-h-[65px] items-center pt-1">
+                  <Turnstile
+                    ref={turnstileRef}
+                    onVerify={handleTurnstileVerify}
+                    onExpire={() => setCaptchaToken("")}
+                    onError={() => setCaptchaToken("")}
+                    theme="dark"
+                  />
+                </div>
 
               </form>
             ) : (
