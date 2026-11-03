@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import Turnstile, { TurnstileRef } from "@/components/Turnstile";
@@ -22,6 +22,10 @@ export default function Home() {
   const [cooldown, setCooldown] = useState(0);
   const [captchaToken, setCaptchaToken] = useState("");
   const turnstileRef = useRef<TurnstileRef>(null);
+
+  const handleTurnstileVerify = useCallback((token: string) => {
+    setCaptchaToken(token);
+  }, []);
 
   // Cooldown countdown timer for resending OTP
   useEffect(() => {
@@ -541,7 +545,7 @@ export default function Home() {
                 <div className="flex justify-center min-h-[65px] items-center">
                   <Turnstile
                     ref={turnstileRef}
-                    onVerify={(token) => setCaptchaToken(token)}
+                    onVerify={handleTurnstileVerify}
                     onExpire={() => setCaptchaToken("")}
                     onError={() => setCaptchaToken("")}
                     theme="dark"

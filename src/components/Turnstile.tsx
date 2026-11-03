@@ -43,6 +43,17 @@ const Turnstile = forwardRef<TurnstileRef, TurnstileProps>(
     const effectiveSiteKey =
       siteKey || process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY || "";
 
+    // Keep callback refs fresh without causing re-renders
+    const onVerifyRef = useRef(onVerify);
+    const onExpireRef = useRef(onExpire);
+    const onErrorRef = useRef(onError);
+
+    useEffect(() => {
+      onVerifyRef.current = onVerify;
+      onExpireRef.current = onExpire;
+      onErrorRef.current = onError;
+    });
+
     useImperativeHandle(ref, () => ({
       reset: () => {
         if (widgetIdRef.current && window.turnstile) {
@@ -58,30 +69,32 @@ const Turnstile = forwardRef<TurnstileRef, TurnstileProps>(
 
       const renderWidget = () => {
         if (!containerRef.current || !window.turnstile || !isMounted) return;
-
-        // Clean up previous widget if exists
-        if (widgetIdRef.current) {
-          try {
-            window.turnstile.remove(widgetIdRef.current);
-          } catch {
-            // ignore
-          }
-          widgetIdRef.current = null;
-        }
+        
+        // Prevent re-rendering if already rendered
+        if (widgetIdRef.current) return;
 
         try {
+          // Clear container innerHTML to avoid duplicated iframes
+          containerRef.current.innerHTML = "";
+
           const id = window.turnstile.render(containerRef.current, {
             sitekey: effectiveSiteKey,
             theme: theme,
             size: "normal",
             callback: (token: string) => {
-              if (isMounted) onVerify(token);
+              if (isMounted && onVerifyRef.current) {
+                onVerifyRef.current(token);
+              }
             },
             "expired-callback": () => {
-              if (isMounted && onExpire) onExpire();
+              if (isMounted && onExpireRef.current) {
+                onExpireRef.current();
+              }
             },
             "error-callback": () => {
-              if (isMounted && onError) onError();
+              if (isMounted && onErrorRef.current) {
+                onErrorRef.current();
+              }
             },
           });
           widgetIdRef.current = id;
@@ -108,7 +121,6 @@ const Turnstile = forwardRef<TurnstileRef, TurnstileProps>(
         script.defer = true;
         document.head.appendChild(script);
       } else {
-        // Script is already in DOM but not yet loaded
         const originalCallback = window.onloadTurnstileCallback;
         window.onloadTurnstileCallback = () => {
           if (originalCallback) originalCallback();
@@ -127,15 +139,15 @@ const Turnstile = forwardRef<TurnstileRef, TurnstileProps>(
           widgetIdRef.current = null;
         }
       };
-    }, [effectiveSiteKey, theme, onVerify, onExpire, onError]);
+    }, [effectiveSiteKey, theme]);
 
     if (!effectiveSiteKey) {
       return null;
     }
 
     return (
-      <div className={className || "flex justify-center my-3"}>
-        <div ref={containerRef} />
+      <div className={className || "flex justify-center my-2"}>
+        <div ref={containerRef} className="min-w-[300px] min-h-[65px]" />
       </div>
     );
   }
