@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { createClient } from "@/lib/supabase/client";
-import { Mail, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck, ArrowUpRight } from "lucide-react";
+import { Mail, CheckCircle2, RotateCcw, GraduationCap, ShieldCheck, ArrowUpRight, HelpCircle, X } from "lucide-react";
 
 export default function Home() {
   const [supabase] = useState(() => createClient());
@@ -16,6 +16,7 @@ export default function Home() {
   const [otp, setOtp] = useState(["", "", "", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
 
   useEffect(() => {
     // Check if student already has active session
@@ -227,6 +228,28 @@ export default function Home() {
     setStep("email");
     setEmail("");
     setOtp(["", "", "", "", "", "", "", ""]);
+  };
+
+  // Handle Resend Verification Code from Guide Modal
+  const handleResendCode = async () => {
+    if (!email) return;
+    setLoading(true);
+    setError("");
+    try {
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: email.trim().toLowerCase(),
+        options: { shouldCreateUser: true },
+      });
+      setLoading(false);
+      if (otpError) {
+        setError(otpError.message);
+      } else {
+        setShowHelpModal(false);
+      }
+    } catch {
+      setLoading(false);
+      setError("Failed to resend code");
+    }
   };
 
   if (isLoggedIn) {
@@ -554,6 +577,19 @@ export default function Home() {
                   </a>
                 </div>
 
+                {/* "Didn't find code?" Guide Trigger */}
+                <div className="pt-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowHelpModal(true)}
+                    className="text-xs text-zinc-400 hover:text-white transition inline-flex items-center gap-1.5 cursor-pointer group"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5 text-[#FF6500]" />
+                    <span>Didn&apos;t find your code?</span>
+                    <span className="text-[#FF6500] group-hover:underline font-semibold">View Guide &rarr;</span>
+                  </button>
+                </div>
+
               </form>
             )}
 
@@ -565,6 +601,112 @@ export default function Home() {
               </span>
               <span>Exclusively LPU</span>
             </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* ============================================================== */}
+      {/* 3. LPU OUTLOOK VERIFICATION CODE GUIDE MODAL                   */}
+      {/* ============================================================== */}
+      {showHelpModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="relative w-full max-w-md bg-[#161616] border border-zinc-800 rounded-2xl p-6 sm:p-7 text-white shadow-2xl space-y-6">
+            
+            {/* Modal Header */}
+            <div className="flex items-start justify-between">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FF6500]/10 border border-[#FF6500]/30 text-[10px] font-bold text-[#FF6500] uppercase tracking-wider">
+                  Outlook Guide
+                </div>
+                <h3 className="text-lg font-bold text-white tracking-tight">
+                  Finding Your Code in LPU Outlook
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowHelpModal(false)}
+                className="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-zinc-800 transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Step-by-Step Instructions */}
+            <div className="space-y-3 text-xs">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
+                <span className="w-5 h-5 rounded-full bg-[#FF6500] text-black font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                  1
+                </span>
+                <div className="space-y-0.5">
+                  <div className="font-bold text-white">Check the &quot;Other&quot; Tab</div>
+                  <p className="text-zinc-400 leading-relaxed text-[11.5px]">
+                    LPU Outlook separates incoming emails into <strong>Focused</strong> and <strong>Other</strong>. Automated codes land directly in the <strong>Other</strong> tab.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
+                <span className="w-5 h-5 rounded-full bg-[#FF6500] text-black font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                  2
+                </span>
+                <div className="space-y-0.5">
+                  <div className="font-bold text-white">Inspect &quot;Junk Email&quot; Folder</div>
+                  <p className="text-zinc-400 leading-relaxed text-[11.5px]">
+                    If not in Other, check the <strong>Junk Email</strong> folder in your Outlook left folder list.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
+                <span className="w-5 h-5 rounded-full bg-[#FF6500] text-black font-extrabold flex items-center justify-center text-[11px] shrink-0 mt-0.5">
+                  3
+                </span>
+                <div className="space-y-0.5">
+                  <div className="font-bold text-white">Search &quot;lpupath.online&quot;</div>
+                  <p className="text-zinc-400 leading-relaxed text-[11.5px]">
+                    Search <code>lpupath.online</code> or <code>verify@lpupath.online</code> in the Outlook top search bar to locate the email instantly across all folders.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="space-y-2.5 pt-1">
+              <a
+                href="https://outlook.office.com/mail/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-xs font-bold rounded-full transition flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>Open LPU Outlook Web</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleResendCode}
+                  disabled={loading}
+                  className="flex-1 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 text-white text-xs font-semibold rounded-full transition cursor-pointer disabled:opacity-50"
+                >
+                  {loading ? "Resending..." : "Resend Passcode"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowHelpModal(false)}
+                  className="px-5 py-2.5 bg-transparent hover:bg-zinc-800 text-zinc-400 hover:text-white text-xs font-medium rounded-full transition cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
           </div>
 
