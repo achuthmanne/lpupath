@@ -32,10 +32,21 @@ export default function Home() {
     };
     checkActiveSession();
 
+    // Listen to real-time auth changes (e.g. if student clicks email confirmation link)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user?.email) {
+        setEmail(session.user.email);
+        setIsLoggedIn(true);
+      }
+    });
+
     const timer = setTimeout(() => {
       setAnimating(true);
     }, 200);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      subscription.unsubscribe();
+    };
   }, [supabase]);
 
   // Handle Real Supabase OTP Delivery
@@ -49,14 +60,11 @@ export default function Home() {
       return;
     }
 
-    // Allow official LPU domains, and project developer email for testing
-    const isLpu = 
-      trimmed.endsWith("@lpu.in") || 
-      trimmed.endsWith("@lpu.co.in") || 
-      trimmed === "achuthchowdary96@gmail.com";
+    // Strictly allow ONLY official Lovely Professional University student emails
+    const isLpu = trimmed.endsWith("@lpu.in") || trimmed.endsWith("@lpu.co.in");
 
     if (!isLpu) {
-      setError("Only official university emails ending in @lpu.in are allowed");
+      setError("Access Restricted: Only official university emails (@lpu.in) are permitted");
       return;
     }
 
@@ -137,19 +145,32 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+      // First attempt email OTP verification
+      let verifyResult = await supabase.auth.verifyOtp({
         email: email.trim().toLowerCase(),
         token: enteredToken,
         type: "email",
       });
 
-      if (verifyError) {
+      // If failed, attempt signup OTP verification (for new accounts)
+      if (verifyResult.error) {
+        const retryResult = await supabase.auth.verifyOtp({
+          email: email.trim().toLowerCase(),
+          token: enteredToken,
+          type: "signup",
+        });
+        if (!retryResult.error) {
+          verifyResult = retryResult;
+        }
+      }
+
+      if (verifyResult.error) {
         setLoading(false);
-        setError(verifyError.message || "Invalid or expired verification code");
+        setError(verifyResult.error.message || "Invalid or expired verification code");
         return;
       }
 
-      if (data.session) {
+      if (verifyResult.data?.session) {
         setLoading(false);
         setIsLoggedIn(true);
       } else {
