@@ -64,7 +64,7 @@ export default function Home() {
     const isLpu = trimmed.endsWith("@lpu.in") || trimmed.endsWith("@lpu.co.in");
 
     if (!isLpu) {
-      setError("Access Restricted: Only official university emails (@lpu.in) are permitted");
+      setError("Please use your official university email (@lpu.in)");
       return;
     }
 
