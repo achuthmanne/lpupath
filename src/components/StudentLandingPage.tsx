@@ -401,128 +401,191 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
           </p>
         </div>
 
-        {/* Circular Wheel + Interactive Showcase Grid */}
-        <div className="mt-14 lg:mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 xl:gap-20 items-start max-w-7xl mx-auto">
+        {/* UNIFIED MASTER SHOWCASE CARD (AS SKETCHED BY USER: WHEEL WITH CENTER NAMES + CURVED DIVIDER + DETAILS) */}
+        <div className="mt-12 lg:mt-16 max-w-7xl mx-auto bg-white border border-[#E4E4E7] rounded-3xl sm:rounded-[36px] lg:rounded-[40px] shadow-sm overflow-hidden relative">
           
-          {/* LEFT: 5-SEGMENT DONUT WHEEL WITH CENTRAL HOLE */}
-          <div className="lg:col-span-6 xl:col-span-6 flex flex-col items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
             
-            {/* Donut Container (Increased Size for Generous Wheel Presence) */}
-            <div className="relative w-full max-w-[450px] sm:max-w-[490px] lg:max-w-[500px] aspect-square flex items-center justify-center">
+            {/* LEFT: 5-SEGMENT DONUT WHEEL WITH DYNAMIC CENTER HUB (`names`) */}
+            <div className="lg:col-span-6 xl:col-span-6 p-6 sm:p-10 lg:p-12 flex flex-col items-center justify-between relative bg-[#FAFAFA]/40 lg:bg-transparent">
               
-              {/* SVG 5-Segment Donut Ring (Precision 600x600 Coordinates) */}
-              <svg
-                viewBox="0 0 600 600"
-                className="w-full h-full overflow-visible select-none"
-              >
+              {/* Donut Container */}
+              <div className="relative w-full max-w-[420px] sm:max-w-[460px] aspect-square flex items-center justify-center">
+                
+                {/* SVG 5-Segment Donut Ring (Precision 600x600 Coordinates) */}
+                <svg
+                  viewBox="0 0 600 600"
+                  className="w-full h-full overflow-visible select-none"
+                >
+                  {PILLARS.map((pillar, idx) => {
+                    const startAngle = idx * 72 + 2;
+                    const endAngle = (idx + 1) * 72 - 2;
+                    const isActive = activePillar === idx;
+                    const d = getDonutSegmentPath(300, 300, 150, 265, startAngle, endAngle);
+
+                    return (
+                      <path
+                        key={pillar.id}
+                        d={d}
+                        fill={pillar.color}
+                        opacity={isActive ? 1 : 0.85}
+                        stroke="white"
+                        strokeWidth={isActive ? 3.5 : 2}
+                        className="cursor-pointer transition-all duration-300 hover:opacity-100"
+                        onClick={() => setActivePillar(idx)}
+                        onMouseEnter={() => setActivePillar(idx)}
+                      />
+                    );
+                  })}
+                </svg>
+
+                {/* Minimalist Corporate Icons Placed Directly on the Colored Wheel Segments */}
                 {PILLARS.map((pillar, idx) => {
-                  const startAngle = idx * 72 + 2;
-                  const endAngle = (idx + 1) * 72 - 2;
                   const isActive = activePillar === idx;
-                  const d = getDonutSegmentPath(300, 300, 150, 265, startAngle, endAngle);
+                  const IconComponent = pillar.icon;
 
                   return (
-                    <path
+                    <button
                       key={pillar.id}
-                      d={d}
-                      fill={pillar.color}
-                      opacity={isActive ? 1 : 0.85}
-                      stroke="white"
-                      strokeWidth={isActive ? 3.5 : 2}
-                      className="cursor-pointer transition-all duration-300 hover:opacity-100"
+                      type="button"
                       onClick={() => setActivePillar(idx)}
                       onMouseEnter={() => setActivePillar(idx)}
-                    />
+                      className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center cursor-pointer z-20 outline-none p-3 group"
+                      style={{ left: `${pillar.xPct}%`, top: `${pillar.yPct}%` }}
+                      aria-label={pillar.name}
+                      title={pillar.name}
+                    >
+                      <IconComponent
+                        className={`w-7 h-7 sm:w-8 sm:h-8 text-white transition-opacity duration-200 ${
+                          isActive
+                            ? "opacity-100"
+                            : "opacity-75 group-hover:opacity-100"
+                        }`}
+                        strokeWidth={1.75}
+                      />
+                    </button>
                   );
                 })}
-              </svg>
 
-              {/* Minimalist Corporate Icons Placed Directly on the Colored Wheel Segments */}
-              {PILLARS.map((pillar, idx) => {
-                const isActive = activePillar === idx;
-                const IconComponent = pillar.icon;
-
-                return (
-                  <button
-                    key={pillar.id}
-                    type="button"
-                    onClick={() => setActivePillar(idx)}
-                    onMouseEnter={() => setActivePillar(idx)}
-                    className="absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center cursor-pointer z-20 outline-none p-3 group"
-                    style={{ left: `${pillar.xPct}%`, top: `${pillar.yPct}%` }}
-                    aria-label={pillar.name}
-                    title={pillar.name}
-                  >
-                    <IconComponent
-                      className={`w-7 h-7 sm:w-8 sm:h-8 text-white transition-opacity duration-200 ${
-                        isActive
-                          ? "opacity-100"
-                          : "opacity-75 group-hover:opacity-100"
-                      }`}
-                      strokeWidth={1.75}
-                    />
-                  </button>
-                );
-              })}
-
-            </div>
-
-            {/* Quick Segment Selector Pills (Under Wheel) */}
-            <div className="mt-6 sm:mt-7 flex flex-wrap items-center justify-center gap-2 max-w-[480px]">
-              {PILLARS.map((p, idx) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => setActivePillar(idx)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
-                    activePillar === idx
-                      ? "text-white"
-                      : "bg-white text-[#52525B] border-[#E4E4E7] hover:border-zinc-400 hover:text-[#111111]"
-                  }`}
+                {/* DYNAMIC CENTER HUB (`names` FROM USER SKETCH) */}
+                <div
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44%] h-[44%] rounded-full bg-white border border-[#E4E4E7] shadow-sm flex flex-col items-center justify-center p-3 text-center z-10 transition-all duration-300 pointer-events-none select-none"
                   style={{
-                    backgroundColor: activePillar === idx ? p.color : undefined,
-                    borderColor: activePillar === idx ? p.color : undefined,
+                    boxShadow: "0 6px 24px -4px rgba(0, 0, 0, 0.06)",
                   }}
                 >
-                  <p.icon className="w-3.5 h-3.5" strokeWidth={activePillar === idx ? 2 : 1.75} />
-                  <span>{p.shortName}</span>
-                </button>
-              ))}
+                  <active.icon
+                    className="w-6 h-6 sm:w-7 sm:h-7 transition-colors duration-300"
+                    style={{ color: active.color }}
+                    strokeWidth={1.8}
+                  />
+                  <span className="text-xs sm:text-sm font-black text-[#111111] leading-tight tracking-tight mt-1 max-w-[130px] line-clamp-2">
+                    {active.shortName}
+                  </span>
+                  <span
+                    className="text-[10px] sm:text-[11px] font-bold mt-1 px-2.5 py-0.5 rounded-full transition-colors duration-300"
+                    style={{
+                      backgroundColor: active.bgTint,
+                      color: active.color,
+                    }}
+                  >
+                    {active.stat}
+                  </span>
+                </div>
+
+              </div>
+
+              {/* Quick Segment Selector Pills (Under Wheel) */}
+              <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-2 max-w-[480px]">
+                {PILLARS.map((p, idx) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setActivePillar(idx)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
+                      activePillar === idx
+                        ? "text-white"
+                        : "bg-white text-[#52525B] border-[#E4E4E7] hover:border-zinc-400 hover:text-[#111111]"
+                    }`}
+                    style={{
+                      backgroundColor: activePillar === idx ? p.color : undefined,
+                      borderColor: activePillar === idx ? p.color : undefined,
+                    }}
+                  >
+                    <p.icon className="w-3.5 h-3.5" strokeWidth={activePillar === idx ? 2 : 1.75} />
+                    <span>{p.shortName}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Desktop Curved Arc Divider (as sketched by user) */}
+              <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-8 pointer-events-none overflow-hidden">
+                <svg
+                  viewBox="0 0 32 600"
+                  preserveAspectRatio="none"
+                  className="h-full w-full"
+                >
+                  <path
+                    d="M 0,0 C 26,180 26,420 0,600"
+                    fill="none"
+                    stroke="#E4E4E7"
+                    strokeWidth="1.5"
+                  />
+                </svg>
+              </div>
+
             </div>
 
-          </div>
+            {/* Mobile Curved Divider between top and bottom */}
+            <div className="block lg:hidden w-full h-6 overflow-hidden px-6 my-2">
+              <svg
+                viewBox="0 0 600 24"
+                preserveAspectRatio="none"
+                className="w-full h-full"
+              >
+                <path
+                  d="M 0,0 C 180,22 420,22 600,0"
+                  fill="none"
+                  stroke="#E4E4E7"
+                  strokeWidth="1.5"
+                />
+              </svg>
+            </div>
 
-          {/* RIGHT: ACTIVE CATEGORY DEEP-DIVE SHOWCASE CARD (FLAT & ALIGNED WITH WHEEL) */}
-          <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-start">
-            <div className="bg-white border border-[#E4E4E7] rounded-3xl p-6 sm:p-8 lg:p-9 lg:min-h-[500px] flex flex-col justify-between relative overflow-hidden transition-all duration-300">
+            {/* RIGHT: ACTIVE CATEGORY DEEP-DIVE DETAILS (THE LINES FROM SKETCH) */}
+            <div className="lg:col-span-6 xl:col-span-6 p-6 sm:p-10 lg:p-12 flex flex-col justify-between bg-white">
 
               {/* Top Section */}
               <div className="space-y-6">
-                {/* Card Header Row */}
-                <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#F4F4F5]">
-                  <div className="flex items-center gap-3.5">
-                    <div
-                      className="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors duration-300"
-                      style={{ backgroundColor: active.bgTint, color: active.color }}
-                    >
-                      <active.icon className="w-6 h-6" strokeWidth={1.75} />
-                    </div>
-                    <div>
-                      <div
-                        className="text-xs font-bold uppercase tracking-wider transition-colors duration-300"
-                        style={{ color: active.color }}
-                      >
-                        {active.badge}
-                      </div>
-                      <h3 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight mt-0.5">
-                        {active.name}
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* Key Stat Badge */}
+                
+                {/* Pillar Counter & Badge */}
+                <div className="flex items-center justify-between gap-3">
                   <div
-                    className="px-3.5 py-1.5 rounded-full border text-xs font-black flex items-center gap-1.5 transition-colors duration-300"
+                    className="text-xs font-bold uppercase tracking-wider transition-colors duration-300"
+                    style={{ color: active.color }}
+                  >
+                    {active.badge}
+                  </div>
+                  <span className="text-xs font-black text-zinc-400 font-mono tracking-wider">
+                    0{activePillar + 1} / 05
+                  </span>
+                </div>
+
+                {/* Card Title & Icon */}
+                <div className="flex items-center gap-3.5 pb-4 border-b border-[#F4F4F5]">
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors duration-300 shrink-0"
+                    style={{ backgroundColor: active.bgTint, color: active.color }}
+                  >
+                    <active.icon className="w-6 h-6" strokeWidth={1.75} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+                      {active.name}
+                    </h3>
+                  </div>
+                  <div
+                    className="hidden sm:flex px-3 py-1.5 rounded-full border text-xs font-black items-center gap-1.5 transition-colors duration-300 shrink-0"
                     style={{
                       backgroundColor: active.bgTint,
                       borderColor: active.borderTint,
@@ -538,7 +601,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                   {active.description}
                 </p>
 
-                {/* 3 Key Verified Features */}
+                {/* 3 Key Verified Features (Lines from User Sketch) */}
                 <div className="space-y-3 pt-1">
                   {active.features.map((feature, idx) => (
                     <div key={idx} className="flex items-start gap-3">
@@ -554,13 +617,14 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                     </div>
                   ))}
                 </div>
+
               </div>
 
               {/* Card Bottom CTA & Navigation Dots */}
-              <div className="pt-6 mt-6 border-t border-[#F4F4F5] flex flex-wrap items-center justify-between gap-4">
+              <div className="pt-8 mt-8 border-t border-[#F4F4F5] flex flex-wrap items-center justify-between gap-4">
                 <button
                   type="button"
-                  className="px-6 py-3.5 text-white text-sm font-bold rounded-full transition flex items-center gap-2 cursor-pointer hover:opacity-90"
+                  className="px-6 py-3.5 text-white text-sm font-bold rounded-full transition flex items-center gap-2 cursor-pointer hover:opacity-90 shadow-xs"
                   style={{ backgroundColor: active.color }}
                 >
                   <span>{active.buttonText}</span>
@@ -574,8 +638,8 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                       key={p.id}
                       type="button"
                       onClick={() => setActivePillar(idx)}
-                      className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
-                        activePillar === idx ? "scale-125" : "bg-zinc-200 hover:bg-zinc-300"
+                      className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                        activePillar === idx ? "w-6" : "w-2.5 bg-zinc-200 hover:bg-zinc-300"
                       }`}
                       style={{
                         backgroundColor: activePillar === idx ? p.color : undefined,
@@ -588,6 +652,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
               </div>
 
             </div>
+
           </div>
 
         </div>
