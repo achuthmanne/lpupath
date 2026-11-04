@@ -26,6 +26,7 @@ export default function Home() {
 
   const handleTurnstileVerify = useCallback((token: string) => {
     setCaptchaToken(token);
+    setError((prev) => (prev === "Please complete verification" ? "" : prev));
   }, []);
 
   // Cooldown countdown timer for resending OTP
@@ -88,6 +89,12 @@ export default function Home() {
       return;
     }
 
+    // Require Cloudflare Turnstile Verification before sending OTP
+    if (!captchaToken) {
+      setError("Please complete verification");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -102,7 +109,17 @@ export default function Home() {
 
       if (otpError) {
         setLoading(false);
-        setError(otpError.message);
+        const lowerMsg = otpError.message?.toLowerCase() || "";
+        if (
+          lowerMsg.includes("captcha") ||
+          lowerMsg.includes("token") ||
+          lowerMsg.includes("verification") ||
+          lowerMsg.includes("bot")
+        ) {
+          setError("Please complete verification");
+        } else {
+          setError(otpError.message);
+        }
         turnstileRef.current?.reset();
         setCaptchaToken("");
         return;
@@ -370,13 +387,13 @@ export default function Home() {
                 <div className="flex items-baseline gap-1.5 sm:gap-2 leading-none">
                   <span
                     className="text-4xl sm:text-6xl font-black text-[#111111] tracking-[-0.035em] leading-none"
-                    style={{ fontWeight: 800 }}
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800 }}
                   >
                     LPU
                   </span>
                   <span
                     className="text-4xl sm:text-6xl font-black text-[#FF6500] tracking-[-0.035em] leading-none"
-                    style={{ fontWeight: 800 }}
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800 }}
                   >
                     PATH
                   </span>
@@ -386,7 +403,7 @@ export default function Home() {
                 <div className="leading-none">
                   <p
                     className="text-[10px] sm:text-[14px] text-[#111111] uppercase tracking-[0.25em] font-semibold whitespace-nowrap leading-none"
-                    style={{ fontWeight: 600 }}
+                    style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600 }}
                   >
                     KNOW BEFORE YOUR TURN.
                   </p>

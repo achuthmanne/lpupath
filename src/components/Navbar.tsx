@@ -96,14 +96,14 @@ export default function Navbar({ userEmail: propUserEmail, onSignOut }: NavbarPr
               {/* Wordmark: LPU PATH */}
               <div className="flex items-baseline gap-1 sm:gap-1.5 leading-none">
                 <span
-                  className="text-lg sm:text-[20px] font-black text-[#111111] tracking-[-0.03em] leading-none"
-                  style={{ fontWeight: 800 }}
+                  className="text-[18px] sm:text-[21px] font-black text-[#111111] tracking-[-0.035em] leading-none"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800 }}
                 >
                   LPU
                 </span>
                 <span
-                  className="text-lg sm:text-[20px] font-black text-[#FF6500] tracking-[-0.03em] leading-none"
-                  style={{ fontWeight: 800 }}
+                  className="text-[18px] sm:text-[21px] font-black text-[#FF6500] tracking-[-0.035em] leading-none"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800 }}
                 >
                   PATH
                 </span>
@@ -112,8 +112,8 @@ export default function Navbar({ userEmail: propUserEmail, onSignOut }: NavbarPr
               {/* Tagline: KNOW BEFORE YOUR TURN. */}
               <div className="leading-none">
                 <p
-                  className="text-[7.5px] sm:text-[8.5px] text-[#111111] uppercase tracking-[0.26em] font-semibold whitespace-nowrap leading-none"
-                  style={{ fontWeight: 600 }}
+                  className="text-[8.5px] sm:text-[9.5px] text-[#111111] uppercase tracking-[0.25em] font-semibold whitespace-nowrap leading-none"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600 }}
                 >
                   KNOW BEFORE YOUR TURN.
                 </p>
