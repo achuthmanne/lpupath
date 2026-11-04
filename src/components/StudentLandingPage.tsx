@@ -142,7 +142,9 @@ const INDIAN_COMPANIES: CompanyLogoItem[] = [
   { id: "infosys", name: "Infosys", logo: "/companies/infosys.png" },
   { id: "cognizant", name: "Cognizant", logo: "/companies/cognizant.png" },
   { id: "capgemini", name: "Capgemini", logo: "/companies/capgemini.png" },
+  { id: "bosch", name: "Bosch", logo: "/companies/bosch.png" },
   { id: "informatica", name: "Informatica", logo: "/companies/informatica.png" },
+  { id: "shl", name: "SHL", logo: "/companies/shl.png" },
   { id: "business-today", name: "Business Today", logo: "/companies/business-today.png" },
 ];
 
