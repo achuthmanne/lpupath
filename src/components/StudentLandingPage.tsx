@@ -639,9 +639,9 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
             </div>
           </div>
 
-          {/* HORIZONTAL AUTO-SCROLL CAROUSEL (MIDDLE ITEM LIFTS UP SMOOTHLY) */}
+          {/* HORIZONTAL AUTO-SCROLL CAROUSEL (CLEAN, LARGE LOGOS ONLY - NO CARD BORDERS) */}
           <div
-            className="relative w-full max-w-5xl mx-auto h-48 sm:h-52 lg:h-56 overflow-hidden flex items-center justify-center my-4"
+            className="relative w-full max-w-6xl mx-auto h-52 sm:h-60 lg:h-64 overflow-hidden flex items-center justify-center my-6"
             onMouseEnter={() => setIsCarouselPaused(true)}
             onMouseLeave={() => setIsCarouselPaused(false)}
           >
@@ -658,36 +658,28 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                 <div
                   key={company.id}
                   onClick={() => setCompanyIdx(idx)}
-                  className="absolute top-1/2 cursor-pointer transition-all duration-600 ease-out flex items-center justify-center select-none"
+                  className="absolute top-1/2 cursor-pointer transition-all duration-700 ease-out flex items-center justify-center select-none"
                   style={{
-                    left: `calc(50% + ${diff} * clamp(155px, 22vw, 240px))`,
-                    transform: `translate(-50%, ${isCenter ? "-68%" : "-50%"}) scale(${
-                      isCenter ? 1.15 : isAdjacent ? 0.95 : 0.8
+                    left: `calc(50% + ${diff} * clamp(220px, 28vw, 340px))`,
+                    transform: `translate(-50%, ${isCenter ? "-65%" : "-50%"}) scale(${
+                      isCenter ? 1.2 : isAdjacent ? 0.95 : 0.75
                     })`,
                     zIndex: isCenter ? 30 : isAdjacent ? 20 : 10,
-                    opacity: isCenter ? 1 : isAdjacent ? 0.72 : 0.3,
+                    opacity: isCenter ? 1 : isAdjacent ? 0.45 : 0.15,
                   }}
                 >
-                  <div
-                    className={`w-[190px] sm:w-[220px] lg:w-[230px] h-24 sm:h-28 lg:h-30 rounded-2xl bg-white border p-5 flex items-center justify-center transition-all duration-300 ${
-                      isCenter
-                        ? "border-[#FF6500] shadow-lg ring-2 ring-[#FF6500]/20"
-                        : "border-[#E4E4E7] hover:border-zinc-400"
-                    }`}
-                  >
+                  <div className="w-[220px] sm:w-[260px] lg:w-[300px] h-28 sm:h-32 lg:h-36 flex items-center justify-center p-2">
                     {company.logo ? (
                       <Image
                         src={company.logo}
                         alt={company.name}
-                        width={180}
-                        height={64}
-                        className={`max-h-12 sm:max-h-14 w-auto object-contain transition-all duration-300 pointer-events-none ${
-                          isCenter ? "scale-105" : "grayscale-[40%]"
-                        }`}
+                        width={360}
+                        height={150}
+                        className="max-h-20 sm:max-h-24 lg:max-h-28 w-auto max-w-[210px] sm:max-w-[250px] lg:max-w-[280px] object-contain transition-all duration-500 pointer-events-none drop-shadow-none"
                         priority
                       />
                     ) : (
-                      <span className="text-xs sm:text-sm font-bold text-[#27272A] tracking-tight text-center px-2">
+                      <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#111111] tracking-tight text-center px-2">
                         {company.name}
                       </span>
                     )}
@@ -697,17 +689,17 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
             })}
           </div>
 
-          {/* Carousel Manual Controls & Indicators */}
-          <div className="flex items-center justify-center gap-4 pt-2">
+          {/* Carousel Manual Controls & Indicators (< > Neat Buttons) */}
+          <div className="flex items-center justify-center gap-5 pt-3">
             <button
               type="button"
               onClick={() =>
                 setCompanyIdx((prev) => (prev - 1 + currentCompanies.length) % currentCompanies.length)
               }
-              className="w-9 h-9 rounded-full bg-white border border-[#E4E4E7] text-[#52525B] hover:text-[#111111] hover:border-zinc-400 flex items-center justify-center transition cursor-pointer"
+              className="w-10 h-10 rounded-full bg-white border border-[#E4E4E7] text-[#52525B] hover:text-[#111111] hover:border-zinc-400 hover:bg-zinc-50 flex items-center justify-center transition cursor-pointer shadow-xs active:scale-95"
               aria-label="Previous company"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-5 h-5" strokeWidth={2} />
             </button>
 
             {/* Indicator Dots */}
@@ -718,7 +710,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                   type="button"
                   onClick={() => setCompanyIdx(idx)}
                   className={`h-2 rounded-full transition-all cursor-pointer ${
-                    companyIdx === idx ? "w-6 bg-[#FF6500]" : "w-2 bg-zinc-200 hover:bg-zinc-300"
+                    companyIdx === idx ? "w-6 bg-[#111111]" : "w-2 bg-zinc-200 hover:bg-zinc-300"
                   }`}
                   title={c.name}
                   aria-label={c.name}
@@ -729,10 +721,10 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
             <button
               type="button"
               onClick={() => setCompanyIdx((prev) => (prev + 1) % currentCompanies.length)}
-              className="w-9 h-9 rounded-full bg-white border border-[#E4E4E7] text-[#52525B] hover:text-[#111111] hover:border-zinc-400 flex items-center justify-center transition cursor-pointer"
+              className="w-10 h-10 rounded-full bg-white border border-[#E4E4E7] text-[#52525B] hover:text-[#111111] hover:border-zinc-400 hover:bg-zinc-50 flex items-center justify-center transition cursor-pointer shadow-xs active:scale-95"
               aria-label="Next company"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-5 h-5" strokeWidth={2} />
             </button>
           </div>
 
