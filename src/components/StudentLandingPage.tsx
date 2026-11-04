@@ -774,8 +774,8 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
 
             </div>
 
-            {/* RIGHT: ACTIVE CATEGORY DEEP-DIVE DETAILS (COMPACT & SNUG TO WHEEL HEIGHT) */}
-            <div className="lg:col-span-6 xl:col-span-6 p-6 sm:p-8 lg:p-10 flex flex-col justify-between bg-white relative">
+            {/* RIGHT: ACTIVE CATEGORY DEEP-DIVE DETAILS (LOWERED VERTICALLY FOR OPTIMAL BALANCE) */}
+            <div className="lg:col-span-6 xl:col-span-6 p-6 sm:p-8 lg:px-12 lg:pt-16 lg:pb-12 xl:pt-20 xl:pb-14 flex flex-col justify-between bg-white relative">
 
               {/* Desktop Curved Arc Separator connecting to white panel (Deepened Curve Radius Hugging the Wheel) */}
               <div className="hidden lg:block absolute -left-24 top-0 bottom-0 w-24 pointer-events-none overflow-hidden z-10">
@@ -796,21 +796,13 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
               {/* Top Section with Smooth Switch Animation */}
               <div key={`pillar-content-${activePillar}`} className="animate-pillar-switch space-y-4 sm:space-y-5">
 
-                {/* Card Title & Icon */}
-                <div className="flex items-center gap-3.5 pb-4 border-b border-[#F4F4F5]">
+                {/* Card Title (Clean, Icon Removed) */}
+                <div className="flex items-center justify-between gap-4 pb-4 border-b border-[#F4F4F5]">
+                  <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-black text-[#111111] tracking-tight leading-tight">
+                    {active.name}
+                  </h3>
                   <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors duration-300 shrink-0"
-                    style={{ backgroundColor: active.bgTint, color: active.color }}
-                  >
-                    <active.icon className="w-6 h-6" strokeWidth={1.75} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
-                      {active.name}
-                    </h3>
-                  </div>
-                  <div
-                    className="hidden sm:flex px-3 py-1.5 rounded-full border text-xs font-black items-center gap-1.5 transition-colors duration-300 shrink-0"
+                    className="hidden sm:flex px-3.5 py-1.5 rounded-full border text-xs font-black items-center transition-colors duration-300 shrink-0"
                     style={{
                       backgroundColor: active.bgTint,
                       borderColor: active.borderTint,
