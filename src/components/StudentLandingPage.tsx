@@ -643,7 +643,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
 
           {/* HORIZONTAL AUTO-SCROLL CAROUSEL (CLEAN, LARGE LOGOS ONLY - NO CARD BORDERS) */}
           <div
-            className="relative w-full max-w-6xl mx-auto h-52 sm:h-60 lg:h-64 overflow-hidden flex items-center justify-center my-6"
+            className="relative w-full max-w-7xl mx-auto h-60 sm:h-72 lg:h-80 overflow-hidden flex items-center justify-center my-6"
             onMouseEnter={() => setIsCarouselPaused(true)}
             onMouseLeave={() => setIsCarouselPaused(false)}
           >
@@ -662,26 +662,26 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                   onClick={() => setCompanyIdx(idx)}
                   className="absolute top-1/2 cursor-pointer transition-all duration-700 ease-out flex items-center justify-center select-none"
                   style={{
-                    left: `calc(50% + ${diff} * clamp(220px, 28vw, 340px))`,
-                    transform: `translate(-50%, ${isCenter ? "-65%" : "-50%"}) scale(${
-                      isCenter ? 1.2 : isAdjacent ? 0.95 : 0.75
+                    left: `calc(50% + ${diff} * clamp(280px, 34vw, 440px))`,
+                    transform: `translate(-50%, ${isCenter ? "-64%" : "-50%"}) scale(${
+                      isCenter ? 1.25 : isAdjacent ? 0.92 : 0.72
                     })`,
                     zIndex: isCenter ? 30 : isAdjacent ? 20 : 10,
-                    opacity: isCenter ? 1 : isAdjacent ? 0.45 : 0.15,
+                    opacity: isCenter ? 1 : isAdjacent ? 0.45 : 0.12,
                   }}
                 >
-                  <div className="w-[220px] sm:w-[260px] lg:w-[300px] h-28 sm:h-32 lg:h-36 flex items-center justify-center p-2">
+                  <div className="w-[280px] sm:w-[340px] lg:w-[400px] h-32 sm:h-40 lg:h-48 flex items-center justify-center p-2">
                     {company.logo ? (
                       <Image
                         src={company.logo}
                         alt={company.name}
-                        width={360}
-                        height={150}
-                        className="max-h-20 sm:max-h-24 lg:max-h-28 w-auto max-w-[210px] sm:max-w-[250px] lg:max-w-[280px] object-contain transition-all duration-500 pointer-events-none drop-shadow-none"
+                        width={460}
+                        height={187}
+                        className="max-h-24 sm:max-h-32 lg:max-h-40 w-auto max-w-[260px] sm:max-w-[320px] lg:max-w-[380px] object-contain transition-all duration-500 pointer-events-none drop-shadow-none"
                         priority
                       />
                     ) : (
-                      <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#111111] tracking-tight text-center px-2">
+                      <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#111111] tracking-tight text-center px-2">
                         {company.name}
                       </span>
                     )}
