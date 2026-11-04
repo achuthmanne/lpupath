@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import {
@@ -16,6 +16,9 @@ import {
   Globe2,
   ChevronLeft,
   ChevronRight,
+  Award,
+  Handshake,
+  Star,
 } from "lucide-react";
 
 interface StudentLandingPageProps {
@@ -138,7 +141,7 @@ interface CompanyLogoItem {
   logo?: string;
 }
 
-const INDIAN_COMPANIES: CompanyLogoItem[] = [
+const TOP_ORGANISATIONS: CompanyLogoItem[] = [
   { id: "infosys", name: "Infosys", logo: "/companies/infosys.png" },
   { id: "cognizant", name: "Cognizant", logo: "/companies/cognizant.png" },
   { id: "capgemini", name: "Capgemini", logo: "/companies/capgemini.png" },
@@ -148,13 +151,20 @@ const INDIAN_COMPANIES: CompanyLogoItem[] = [
   { id: "business-today", name: "Business Today", logo: "/companies/business-today.png" },
 ];
 
-const INTERNATIONAL_COMPANIES: CompanyLogoItem[] = [
-  { id: "google", name: "Google" },
-  { id: "microsoft", name: "Microsoft" },
-  { id: "amazon", name: "Amazon" },
-  { id: "apple", name: "Apple" },
-  { id: "cisco", name: "Cisco Systems" },
-  { id: "oracle", name: "Oracle" },
+const ESTEEMED_PARTNERS: CompanyLogoItem[] = [
+  { id: "google", name: "Google", logo: "/companies/google.png" },
+  { id: "microsoft", name: "Microsoft", logo: "/companies/microsoft-logo.png" },
+  { id: "cadence", name: "Cadence Design Systems", logo: "/companies/cadence.png" },
+  { id: "cipla", name: "Cipla", logo: "/companies/cipla.png" },
+  { id: "jpmorgan", name: "JPMorganChase", logo: "/companies/jpmorgan-chase.png" },
+  { id: "juspay", name: "JUSPAY", logo: "/companies/juspay.png" },
+  { id: "nutanix", name: "Nutanix", logo: "/companies/nutanix.png" },
+  { id: "infineon", name: "Infineon Technologies", logo: "/companies/infineon.png" },
+  { id: "cultfit", name: "cult.fit", logo: "/companies/cultfit.png" },
+  { id: "jio-bp", name: "Jio-bp", logo: "/companies/jio-bp.png" },
+  { id: "jtp", name: "JTP", logo: "/companies/jtp.png" },
+  { id: "jw-marriott", name: "JW Marriott", logo: "/companies/jw-marriott.png" },
+  { id: "jubilant", name: "Jubilant Life Sciences", logo: "/companies/jubilant-lifesciences.png" },
 ];
 
 // Helper to calculate polar to cartesian coordinates
@@ -184,25 +194,36 @@ function getDonutSegmentPath(
   return `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)} A ${rOuter} ${rOuter} 0 ${largeArcFlag} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)} L ${p3.x.toFixed(2)} ${p3.y.toFixed(2)} A ${rInner} ${rInner} 0 ${largeArcFlag} 0 ${p4.x.toFixed(2)} ${p4.y.toFixed(2)} Z`;
 }
 
-// High-Performance Smooth Count-Up Animation Component
+// High-Performance Smooth Count-Up Animation Component with Scroll & Re-Trigger Support
 function CountUp({
   target,
   prefix = "",
   suffix = "",
   decimals = 0,
-  duration = 1600,
+  duration = 1000,
+  trigger = 0,
+  enabled = true,
 }: {
   target: number;
   prefix?: string;
   suffix?: string;
   decimals?: number;
   duration?: number;
+  trigger?: number;
+  enabled?: boolean;
 }) {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
+    if (!enabled) {
+      setValue(0);
+      return;
+    }
+
     let startTimestamp: number | null = null;
     let animationFrameId: number;
+
+    setValue(0);
 
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
@@ -221,7 +242,7 @@ function CountUp({
 
     animationFrameId = requestAnimationFrame(step);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [target, duration]);
+  }, [target, duration, trigger, enabled]);
 
   return (
     <span>
@@ -232,14 +253,286 @@ function CountUp({
   );
 }
 
+// 4 Key Metrics of LPU On-Campus Work Program (Vibrant, Fresh & Lively Light Colors)
+const CAMPUS_JOB_STATS = [
+  {
+    id: "jobs",
+    target: 500,
+    suffix: "+",
+    label: "Jobs Offered Every Semester",
+    bgClass: "bg-[#FFF4EB]",
+    borderClass: "border-[#FED7AA] border-t-[3px] border-t-[#FF6500]",
+    hoverClass: "hover:bg-[#FFEBD9] hover:border-[#FDBA74]",
+    numberColor: "text-[#FF6500]",
+  },
+  {
+    id: "profiles",
+    target: 20,
+    suffix: "+",
+    label: "Specialized Job Profiles",
+    bgClass: "bg-[#EBF5FF]",
+    borderClass: "border-[#BAE6FD] border-t-[3px] border-t-[#0284C7]",
+    hoverClass: "hover:bg-[#DBEAFE] hover:border-[#7DD3FC]",
+    numberColor: "text-[#0284C7]",
+  },
+  {
+    id: "hours",
+    target: 20,
+    suffix: "hrs",
+    label: "Working hours / week",
+    bgClass: "bg-[#F5EEFF]",
+    borderClass: "border-[#DDD6FE] border-t-[3px] border-t-[#7C3AED]",
+    hoverClass: "hover:bg-[#EDE9FE] hover:border-[#C4B5FD]",
+    numberColor: "text-[#7C3AED]",
+  },
+  {
+    id: "female",
+    target: 45,
+    suffix: "%",
+    label: "Jobs are availed by Female Candidates",
+    bgClass: "bg-[#E8FAF0]",
+    borderClass: "border-[#A7F3D0] border-t-[3px] border-t-[#059669]",
+    hoverClass: "hover:bg-[#D1FAE5] hover:border-[#6EE7B7]",
+    numberColor: "text-[#059669]",
+  },
+];
+
+// 16 Verified On-Campus Job Profiles at LPU
+const CAMPUS_AVAILABLE_JOBS = [
+  {
+    id: "peer-tutor",
+    title: "Peer Tutor",
+    description:
+      "Bright students can work as teachers or teaching assistants to teach and guide juniors or weaker students.",
+  },
+  {
+    id: "assistant-physiotherapists",
+    title: "Assistant Physiotherapists",
+    description:
+      "Physiotherapy students can assist in all kinds of physiotherapist activities on campus during competitions and events.",
+  },
+  {
+    id: "assistant-pharmacists",
+    title: "Assistant Pharmacists",
+    description:
+      "Pharmacy students work part time to track the distribution of medicines and maintaining records in the University Medical Store.",
+  },
+  {
+    id: "gsa-trainee",
+    title: "GSA Trainee",
+    description:
+      "Hotel Management Students assist with daily routine tasks and provide guest service.",
+  },
+  {
+    id: "assistant-technicians",
+    title: "Assistant Technicians",
+    description:
+      "Students get avail jobs like welding, motor winding, repairing, assembling products in academic labs and workshops.",
+  },
+  {
+    id: "medical-lab-technicians",
+    title: "Medical Lab Technicians",
+    description:
+      "Students pursuing Clinical Microbiology in LPU can work as part time assistants in Medical Labs.",
+  },
+  {
+    id: "dieticians",
+    title: "Dieticians",
+    description:
+      "To guide students about healthy diets, Hotel Management division hires students to assist as dieticians.",
+  },
+  {
+    id: "content-assistants",
+    title: "Content Assistants",
+    description:
+      "LPU offers talented students jobs as content developers. Students assist research scholars in finding content or write blogs for the university website.",
+  },
+  {
+    id: "sports-trainers",
+    title: "Sports Trainers",
+    description:
+      "To coach and monitor different sports activities and athletics.",
+  },
+  {
+    id: "computer-lab-assistant",
+    title: "Computer Lab Assistant",
+    description:
+      "Students work as lab assistants helping in the maintenance of computers and network addressing hardware and software related issues.",
+  },
+  {
+    id: "library-assistants",
+    title: "Library Assistants",
+    description:
+      "Students work part time as Library Assistants and undertake responsibilities like arranging books, assisting students and maintaining overall discipline.",
+  },
+  {
+    id: "office-assistants",
+    title: "Office Assistants",
+    description:
+      "Part time jobs are offered for interested students in non-academic departments like hostels and uni-hospital.",
+  },
+  {
+    id: "student-counselors",
+    title: "Student Counselors",
+    description:
+      "To counsel parents and their wards, students take part time job as student counselors during admission time.",
+  },
+  {
+    id: "data-entry-operators",
+    title: "Data entry Operators",
+    description:
+      "Students working as part time data entry operators assist in storing and maintenance of office data.",
+  },
+  {
+    id: "receptionist-campus-guides",
+    title: "Receptionist & Campus Guides",
+    description:
+      "Students play a pivotal role as receptionists/campus guides in assisting visitors and renowned personalities see the campus.",
+  },
+  {
+    id: "call-centre-assistant",
+    title: "Call Centre Assistant",
+    description:
+      "Students work as Call Centre Assistants and handle support or admissions queries over phone.",
+  },
+];
+
+// 4-Step Process Flow of On-Campus Part-Time Employment at LPU
+const PART_TIME_PROCESS_STEPS = [
+  {
+    number: "01",
+    step: "Step 1",
+    title: "UMS Announcement",
+    description:
+      "Vacancies are officially published on the UMS Part-Time Job module with term eligibility criteria.",
+  },
+  {
+    number: "02",
+    step: "Step 2",
+    title: "Interview",
+    description:
+      "Departmental interview and interaction conducted by the concerned hiring division heads.",
+  },
+  {
+    number: "03",
+    step: "Step 3",
+    title: "Approval from SWW",
+    subtext: "(Student Welfare Wing)",
+    description:
+      "Mandatory compliance check for 75%+ attendance, CGPA requirements, and clean discipline record.",
+  },
+  {
+    number: "04",
+    step: "Step 4",
+    title: "Joining by HR",
+    description:
+      "Formal appointment letter issued by University HR to officially onboard the student.",
+  },
+];
+
+// Student Work Eligibility Criteria for On-Campus Jobs
+const STUDENT_WORK_ELIGIBILITY_POINTS = [
+  "All the regular/distance students of Lovely Professional University who are registered in the current term and are not admitted in a programme /course with duration of less than six months are eligible to apply.",
+  "The aggregate attendance of the student should be more than 75%.",
+  "The student should not have any serious indiscipline case.",
+  "A specific CGPA can be set as an eligibility criterion based on the job requirements.",
+];
+
+// Official UMS Navigation Breadcrumb Paths
+const UMS_NAVIGATION_LINKS = [
+  {
+    id: "employment-policy",
+    title: "Student Employment Policy",
+    description:
+      "Review detailed employment norms, honorarium guidelines, and work duration rules.",
+    path: [
+      "UMS NAVIGATION",
+      "DIVISION OF STUDENT WELFARE",
+      "POLICIES",
+      "POLICY WISE",
+      "STUDENT EMPLOYMENT POLICY",
+    ],
+  },
+  {
+    id: "job-registration",
+    title: "Part-Time Job Registration",
+    description:
+      "Submit online application for active departmental job openings and interview calls.",
+    path: [
+      "UMS NAVIGATION",
+      "DIVISION OF STUDENT WELFARE",
+      "PART TIME JOB MODULE",
+      "STUDENT REGISTRATION",
+    ],
+  },
+];
+
+// Interactive Card with Scroll-Triggered & Mouse Hover-Triggered Count Animation
+function CampusStatCard({
+  stat,
+  viewTrigger,
+  hasEnteredView,
+}: {
+  stat: (typeof CAMPUS_JOB_STATS)[number];
+  viewTrigger: number;
+  hasEnteredView: boolean;
+}) {
+  const [hoverTrigger, setHoverTrigger] = useState(0);
+
+  return (
+    <div
+      onMouseEnter={() => setHoverTrigger((h) => h + 1)}
+      className={`${stat.bgClass} ${stat.borderClass} ${stat.hoverClass} border rounded-xs p-6 sm:p-7 min-h-[140px] flex flex-col justify-start transition-all duration-200 hover:-translate-y-1 hover:shadow-sm select-none text-left cursor-pointer group`}
+    >
+      <div
+        className={`text-3xl sm:text-4xl lg:text-[42px] font-black ${stat.numberColor} tracking-tight leading-none mb-3 tabular-nums transition-transform duration-200 group-hover:scale-105 origin-left`}
+      >
+        <CountUp
+          target={stat.target}
+          suffix={stat.suffix}
+          duration={1000}
+          trigger={viewTrigger + hoverTrigger}
+          enabled={hasEnteredView}
+        />
+      </div>
+      <p className="text-sm font-semibold text-[#111111] leading-snug">
+        {stat.label}
+      </p>
+    </div>
+  );
+}
+
 export default function StudentLandingPage({ email, onSignOut }: StudentLandingPageProps) {
   const [activePillar, setActivePillar] = useState(0);
-  const [companyTab, setCompanyTab] = useState<"national" | "international">("national");
+  const [companyTab, setCompanyTab] = useState<"ranked" | "partners">("ranked");
   const [companyIdx, setCompanyIdx] = useState(0);
   const [isCarouselPaused, setIsCarouselPaused] = useState(false);
   const active = PILLARS[activePillar];
 
-  const currentCompanies = companyTab === "national" ? INDIAN_COMPANIES : INTERNATIONAL_COMPANIES;
+  const currentCompanies = companyTab === "ranked" ? TOP_ORGANISATIONS : ESTEEMED_PARTNERS;
+
+  // Scroll-triggered viewport observer for Section 5 KPI stat cards
+  const [statsViewTrigger, setStatsViewTrigger] = useState(0);
+  const [statsEnteredView, setStatsEnteredView] = useState(false);
+  const statsSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = statsSectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsEnteredView(true);
+          setStatsViewTrigger((v) => v + 1);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Auto-scroll horizontal carousel timer (middle company lifts up smoothly)
   useEffect(() => {
@@ -250,7 +543,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
     return () => clearInterval(interval);
   }, [isCarouselPaused, currentCompanies.length]);
 
-  const handleCompanyTabChange = (tab: "national" | "international") => {
+  const handleCompanyTabChange = (tab: "ranked" | "partners") => {
     setCompanyTab(tab);
     setCompanyIdx(0);
   };
@@ -401,16 +694,16 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
           </p>
         </div>
 
-        {/* UNIFIED MASTER SHOWCASE CARD (AS SKETCHED BY USER: WHEEL WITH CENTER NAMES + CURVED DIVIDER + DETAILS) */}
-        <div className="mt-12 lg:mt-16 max-w-7xl mx-auto bg-white border border-[#E4E4E7] rounded-3xl sm:rounded-[36px] lg:rounded-[40px] shadow-sm overflow-hidden relative">
+        {/* UNIFIED MASTER SHOWCASE CARD (FLAT ZERO-ELEVATION - TRANSPARENT WHEEL SIDE + PURE WHITE DETAILS SIDE) */}
+        <div className="mt-12 lg:mt-16 max-w-7xl mx-auto border border-[#E4E4E7] rounded-3xl sm:rounded-[36px] lg:rounded-[44px] overflow-hidden relative">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
             
-            {/* LEFT: 5-SEGMENT DONUT WHEEL WITH DYNAMIC CENTER HUB (`names`) */}
-            <div className="lg:col-span-6 xl:col-span-6 p-6 sm:p-10 lg:p-12 flex flex-col items-center justify-between relative bg-[#FAFAFA]/40 lg:bg-transparent">
+            {/* LEFT: 5-SEGMENT DONUT WHEEL (COMPACT, HEIGHT DRIVEN BY WHEEL ALONE) */}
+            <div className="lg:col-span-6 xl:col-span-6 p-6 sm:p-8 lg:p-10 flex flex-col items-center justify-center relative bg-transparent">
               
-              {/* Donut Container */}
-              <div className="relative w-full max-w-[420px] sm:max-w-[460px] aspect-square flex items-center justify-center">
+              {/* Donut Container (Increased Size for Enhanced Wheel Presence) */}
+              <div className="relative w-full max-w-[460px] sm:max-w-[500px] lg:max-w-[520px] aspect-square flex items-center justify-center">
                 
                 {/* SVG 5-Segment Donut Ring (Precision 600x600 Coordinates) */}
                 <svg
@@ -467,109 +760,41 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                   );
                 })}
 
-                {/* DYNAMIC CENTER HUB (`names` FROM USER SKETCH) */}
-                <div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[44%] h-[44%] rounded-full bg-white border border-[#E4E4E7] shadow-sm flex flex-col items-center justify-center p-3 text-center z-10 transition-all duration-300 pointer-events-none select-none"
-                  style={{
-                    boxShadow: "0 6px 24px -4px rgba(0, 0, 0, 0.06)",
-                  }}
-                >
-                  <active.icon
-                    className="w-6 h-6 sm:w-7 sm:h-7 transition-colors duration-300"
-                    style={{ color: active.color }}
-                    strokeWidth={1.8}
-                  />
-                  <span className="text-xs sm:text-sm font-black text-[#111111] leading-tight tracking-tight mt-1 max-w-[130px] line-clamp-2">
-                    {active.shortName}
-                  </span>
+                {/* WHEEL CENTER: ONLY ACTIVE CATEGORY NAME (SMOOTH ANIMATED SWITCH) */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-56 flex items-center justify-center text-center pointer-events-none select-none z-10 px-2 overflow-hidden">
                   <span
-                    className="text-[10px] sm:text-[11px] font-bold mt-1 px-2.5 py-0.5 rounded-full transition-colors duration-300"
-                    style={{
-                      backgroundColor: active.bgTint,
-                      color: active.color,
-                    }}
+                    key={`wheel-text-${activePillar}`}
+                    className="animate-wheel-text text-base sm:text-lg lg:text-xl font-black text-[#111111] leading-tight tracking-tight block"
                   >
-                    {active.stat}
+                    {active.shortName}
                   </span>
                 </div>
 
               </div>
 
-              {/* Quick Segment Selector Pills (Under Wheel) */}
-              <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-2 max-w-[480px]">
-                {PILLARS.map((p, idx) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => setActivePillar(idx)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
-                      activePillar === idx
-                        ? "text-white"
-                        : "bg-white text-[#52525B] border-[#E4E4E7] hover:border-zinc-400 hover:text-[#111111]"
-                    }`}
-                    style={{
-                      backgroundColor: activePillar === idx ? p.color : undefined,
-                      borderColor: activePillar === idx ? p.color : undefined,
-                    }}
-                  >
-                    <p.icon className="w-3.5 h-3.5" strokeWidth={activePillar === idx ? 2 : 1.75} />
-                    <span>{p.shortName}</span>
-                  </button>
-                ))}
-              </div>
+            </div>
 
-              {/* Desktop Curved Arc Divider (as sketched by user) */}
-              <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-8 pointer-events-none overflow-hidden">
-                <svg
-                  viewBox="0 0 32 600"
-                  preserveAspectRatio="none"
-                  className="h-full w-full"
-                >
-                  <path
-                    d="M 0,0 C 26,180 26,420 0,600"
-                    fill="none"
-                    stroke="#E4E4E7"
-                    strokeWidth="1.5"
-                  />
+            {/* RIGHT: ACTIVE CATEGORY DEEP-DIVE DETAILS (COMPACT & SNUG TO WHEEL HEIGHT) */}
+            <div className="lg:col-span-6 xl:col-span-6 p-6 sm:p-8 lg:p-10 flex flex-col justify-between bg-white relative">
+
+              {/* Desktop Curved Arc Separator connecting to white panel (Deepened Curve Radius Hugging the Wheel) */}
+              <div className="hidden lg:block absolute -left-24 top-0 bottom-0 w-24 pointer-events-none overflow-hidden z-10">
+                <svg viewBox="0 0 96 600" preserveAspectRatio="none" className="h-full w-full">
+                  <path d="M 96,0 L 96,600 L 0,600 C 90,460 90,140 0,0 Z" fill="white" />
+                  <path d="M 0,0 C 90,140 90,460 0,600" fill="none" stroke="#E4E4E7" strokeWidth="1.5" />
                 </svg>
               </div>
 
-            </div>
+              {/* Mobile Curved Arc Separator connecting to white panel (Deepened Curve Radius Hugging the Wheel) */}
+              <div className="block lg:hidden absolute -top-14 left-0 right-0 h-14 pointer-events-none overflow-hidden z-10">
+                <svg viewBox="0 0 600 56" preserveAspectRatio="none" className="w-full h-full">
+                  <path d="M 0,56 L 600,56 L 600,0 C 440,52 160,52 0,0 Z" fill="white" />
+                  <path d="M 0,0 C 160,52 440,52 600,0" fill="none" stroke="#E4E4E7" strokeWidth="1.5" />
+                </svg>
+              </div>
 
-            {/* Mobile Curved Divider between top and bottom */}
-            <div className="block lg:hidden w-full h-6 overflow-hidden px-6 my-2">
-              <svg
-                viewBox="0 0 600 24"
-                preserveAspectRatio="none"
-                className="w-full h-full"
-              >
-                <path
-                  d="M 0,0 C 180,22 420,22 600,0"
-                  fill="none"
-                  stroke="#E4E4E7"
-                  strokeWidth="1.5"
-                />
-              </svg>
-            </div>
-
-            {/* RIGHT: ACTIVE CATEGORY DEEP-DIVE DETAILS (THE LINES FROM SKETCH) */}
-            <div className="lg:col-span-6 xl:col-span-6 p-6 sm:p-10 lg:p-12 flex flex-col justify-between bg-white">
-
-              {/* Top Section */}
-              <div className="space-y-6">
-                
-                {/* Pillar Counter & Badge */}
-                <div className="flex items-center justify-between gap-3">
-                  <div
-                    className="text-xs font-bold uppercase tracking-wider transition-colors duration-300"
-                    style={{ color: active.color }}
-                  >
-                    {active.badge}
-                  </div>
-                  <span className="text-xs font-black text-zinc-400 font-mono tracking-wider">
-                    0{activePillar + 1} / 05
-                  </span>
-                </div>
+              {/* Top Section with Smooth Switch Animation */}
+              <div key={`pillar-content-${activePillar}`} className="animate-pillar-switch space-y-4 sm:space-y-5">
 
                 {/* Card Title & Icon */}
                 <div className="flex items-center gap-3.5 pb-4 border-b border-[#F4F4F5]">
@@ -602,7 +827,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                 </p>
 
                 {/* 3 Key Verified Features (Lines from User Sketch) */}
-                <div className="space-y-3 pt-1">
+                <div className="space-y-2.5 pt-1">
                   {active.features.map((feature, idx) => (
                     <div key={idx} className="flex items-start gap-3">
                       <div
@@ -620,11 +845,12 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
 
               </div>
 
-              {/* Card Bottom CTA & Navigation Dots */}
-              <div className="pt-8 mt-8 border-t border-[#F4F4F5] flex flex-wrap items-center justify-between gap-4">
+              {/* Card Bottom CTA & Navigation Dots (Close & Snug) */}
+              <div className="pt-5 mt-5 border-t border-[#F4F4F5] flex flex-wrap items-center justify-between gap-4">
                 <button
+                  key={`pillar-btn-${activePillar}`}
                   type="button"
-                  className="px-6 py-3.5 text-white text-sm font-bold rounded-full transition flex items-center gap-2 cursor-pointer hover:opacity-90 shadow-xs"
+                  className="animate-pillar-switch px-6 py-3.5 text-white text-sm font-bold rounded-full transition flex items-center gap-2 cursor-pointer hover:opacity-90"
                   style={{ backgroundColor: active.color }}
                 >
                   <span>{active.buttonText}</span>
@@ -673,35 +899,35 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
             </h2>
 
             <p className="text-sm sm:text-base text-[#52525B] max-w-2xl mx-auto font-normal leading-relaxed">
-              Explore leading national enterprises and verified organisations hiring on-campus at Lovely Professional University.
+              Explore verified ranking benchmarks, assessment leaders, and esteemed global corporate partners recruiting on-campus at Lovely Professional University.
             </p>
 
             {/* Category Filter Tabs with Clean Lucide Icons (NO Emojis) */}
             <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
               <button
                 type="button"
-                onClick={() => handleCompanyTabChange("national")}
+                onClick={() => handleCompanyTabChange("ranked")}
                 className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition flex items-center gap-2 cursor-pointer border ${
-                  companyTab === "national"
+                  companyTab === "ranked"
                     ? "bg-[#111111] text-white border-[#111111]"
                     : "bg-white text-[#52525B] border-[#E4E4E7] hover:border-zinc-400 hover:text-[#111111]"
                 }`}
               >
-                <Building2 className="w-4 h-4" strokeWidth={1.75} />
-                <span>Indian Organisations</span>
+                <Award className="w-4 h-4" strokeWidth={1.75} />
+                <span>Top Ranked Organisations</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => handleCompanyTabChange("international")}
+                onClick={() => handleCompanyTabChange("partners")}
                 className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition flex items-center gap-2 cursor-pointer border ${
-                  companyTab === "international"
+                  companyTab === "partners"
                     ? "bg-[#111111] text-white border-[#111111]"
                     : "bg-white text-[#52525B] border-[#E4E4E7] hover:border-zinc-400 hover:text-[#111111]"
                 }`}
               >
-                <Globe2 className="w-4 h-4" strokeWidth={1.75} />
-                <span>International Recruiters</span>
+                <Handshake className="w-4 h-4" strokeWidth={1.75} />
+                <span>Esteemed Corporate Partners</span>
               </button>
             </div>
           </div>
@@ -742,7 +968,13 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                         alt={company.name}
                         width={460}
                         height={187}
-                        className="max-h-20 sm:max-h-26 lg:max-h-30 w-auto max-w-[260px] sm:max-w-[320px] lg:max-w-[380px] object-contain transition-all duration-500 pointer-events-none drop-shadow-none"
+                        className={`${
+                          company.id === "microsoft"
+                            ? "max-h-9 sm:max-h-11 lg:max-h-12 max-w-[150px] sm:max-w-[180px] lg:max-w-[210px]"
+                            : company.id === "google"
+                            ? "max-h-12 sm:max-h-15 lg:max-h-18 max-w-[170px] sm:max-w-[210px] lg:max-w-[240px]"
+                            : "max-h-20 sm:max-h-26 lg:max-h-30 max-w-[260px] sm:max-w-[320px] lg:max-w-[380px]"
+                        } w-auto object-contain transition-all duration-500 pointer-events-none drop-shadow-none`}
                         priority
                       />
                     ) : (
@@ -793,6 +1025,191 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
             >
               <ChevronRight className="w-5 h-5" strokeWidth={2} />
             </button>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ============================================================== */}
+      {/* 5. EARN WHILE YOU LEARN (ON-CAMPUS STUDENT WORK & EMPLOYMENT)  */}
+      {/* ============================================================== */}
+      <section className="w-full bg-[#FAFAFA] border-t border-[#E4E4E7] py-20 lg:py-28 px-6 sm:px-12 lg:px-16 xl:px-24 relative overflow-hidden select-none">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          {/* Section Header */}
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-[1.15]">
+              Earn While You Learn <br />
+              <span className="text-[#FF6500]">on Campus.</span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-[#52525B] max-w-2xl mx-auto font-normal leading-relaxed">
+              Students have the option to work part-time jobs on campus to help make college more affordable while gaining verified professional experience.
+            </p>
+          </div>
+
+          {/* 4 HORIZONTAL KEY METRIC CARDS (SCROLL-TRIGGERED & MOUSE-HOVER COUNT ANIMATIONS) */}
+          <div
+            ref={statsSectionRef}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5 max-w-7xl mx-auto"
+          >
+            {CAMPUS_JOB_STATS.map((stat) => (
+              <CampusStatCard
+                key={stat.id}
+                stat={stat}
+                viewTrigger={statsViewTrigger}
+                hasEnteredView={statsEnteredView}
+              />
+            ))}
+          </div>
+
+          {/* ========================================================= */}
+          {/* ON CAMPUS AVAILABLE JOBS (MINIMAL SOFT BLACK CARD)       */}
+          {/* ========================================================= */}
+          <div className="pt-8 sm:pt-12 space-y-6 text-left">
+            
+            {/* Header: ONLY "On Campus Available Jobs" */}
+            <h3 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              On Campus Available Jobs
+            </h3>
+
+            {/* 4 Cards Per Row Grid (16 Verified On-Campus Job Profiles) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+              {CAMPUS_AVAILABLE_JOBS.map((job) => (
+                <div
+                  key={job.id}
+                  className="bg-[#F1F1F4] border border-[#DCDCE0] rounded-xs p-7 sm:p-8 min-h-[220px] sm:min-h-[240px] flex flex-col justify-start select-none text-left"
+                >
+                  {/* Fixed 2-line height title container: 1-line titles vertically center in middle */}
+                  <div className="h-[60px] sm:h-[68px] lg:h-[72px] flex items-center mb-3">
+                    <h4 className="text-xl sm:text-2xl font-black text-[#111111] tracking-tight leading-[1.2]">
+                      {job.title}
+                    </h4>
+                  </div>
+                  {/* Description starts on the exact same baseline across all cards */}
+                  <p className="text-sm sm:text-[15px] text-[#4B5563] leading-relaxed font-normal">
+                    {job.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+          </div>
+
+          {/* ========================================================= */}
+          {/* PROCESS FLOW OF PART-TIME JOB (4 STEPS HORIZONTAL FLOW)  */}
+          {/* ========================================================= */}
+          <div className="pt-10 sm:pt-16 space-y-6 text-left">
+            
+            {/* Header */}
+            <h3 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              Process Flow of Part-time Job
+            </h3>
+
+            {/* 4 Cards In A Row (Linear Process Flow) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
+              {PART_TIME_PROCESS_STEPS.map((step) => (
+                <div
+                  key={step.number}
+                  className="bg-white border border-[#E4E4E7] rounded-xs p-7 sm:p-8 min-h-[200px] flex flex-col justify-start select-none text-left relative"
+                >
+                  {/* Monospace Step Number */}
+                  <div className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight mb-3 font-mono">
+                    {step.number}
+                  </div>
+
+                  {/* Title Area: Fixed height so descriptions start on the exact same line */}
+                  <div className="h-[54px] sm:h-[60px] flex items-center mb-2.5">
+                    <h4 className="text-lg sm:text-xl font-bold text-[#111111] tracking-tight leading-snug">
+                      {step.title}{" "}
+                      {step.subtext && (
+                        <span className="text-xs font-normal text-[#71717A] block">
+                          {step.subtext}
+                        </span>
+                      )}
+                    </h4>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-xs sm:text-[13px] text-[#52525B] leading-relaxed font-normal">
+                    {step.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+          </div>
+
+          {/* ========================================================= */}
+          {/* STUDENT'S WORK ELIGIBILITY CRITERIA (POINTS WITH STARS)   */}
+          {/* ========================================================= */}
+          <div className="pt-10 sm:pt-16 space-y-6 text-left">
+            <h3 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              Student’s Work Eligibility Criteria:
+            </h3>
+
+            {/* Direct Points with Filled Black Stars (No BG Box, Pure Clean List) */}
+            <div className="space-y-4 sm:space-y-5 select-none pl-1">
+              {STUDENT_WORK_ELIGIBILITY_POINTS.map((point, idx) => (
+                <div key={idx} className="flex items-start gap-3.5 sm:gap-4">
+                  <Star className="w-4 h-4 fill-[#111111] text-[#111111] shrink-0 mt-1" />
+                  <p className="text-sm sm:text-[15px] lg:text-base text-[#27272A] font-medium leading-relaxed">
+                    {point}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ========================================================= */}
+          {/* IMPORTANT LINKS (UMS STEP-BY-STEP NAVIGATION BREADCRUMBS) */}
+          {/* ========================================================= */}
+          <div className="pt-10 sm:pt-16 space-y-6 text-left">
+            <h3 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              Important Links
+            </h3>
+
+            {/* 2 Wide Monospace Breadcrumb Navigation Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
+              {UMS_NAVIGATION_LINKS.map((nav) => (
+                <div
+                  key={nav.id}
+                  className="bg-white border border-[#E4E4E7] rounded-xs p-7 sm:p-8 flex flex-col justify-between space-y-5 select-none text-left"
+                >
+                  <div>
+                    <h4 className="text-xl sm:text-2xl font-black text-[#111111] tracking-tight mb-2">
+                      {nav.title}
+                    </h4>
+                    <p className="text-xs sm:text-sm text-[#52525B] leading-relaxed font-normal">
+                      {nav.description}
+                    </p>
+                  </div>
+
+                  {/* UMS Breadcrumb Terminal Box */}
+                  <div className="bg-[#18181B] text-[#D4D4D8] rounded-xs p-4 sm:p-5 border border-[#27272A] font-mono text-xs leading-relaxed flex flex-wrap items-center gap-1.5 select-text">
+                    {nav.path.map((segment, sIdx) => {
+                      const isLast = sIdx === nav.path.length - 1;
+                      return (
+                        <span key={sIdx} className="inline-flex items-center gap-1.5">
+                          <span
+                            className={
+                              isLast
+                                ? "text-[#FF6500] font-black tracking-wide"
+                                : "text-zinc-300 font-semibold"
+                            }
+                          >
+                            {segment}
+                          </span>
+                          {!isLast && (
+                            <ChevronRight className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
+                          )}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
         </div>
