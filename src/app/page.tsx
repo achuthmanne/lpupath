@@ -336,33 +336,15 @@ export default function Home() {
         <div className="max-w-xl my-auto space-y-8">
           
           {/* PROMINENT SLIT-REVEAL ANIMATION (BIG SIZE: 76px) */}
-          <div className="flex items-center gap-4 select-none">
+          <div className="flex items-center gap-3.5 sm:gap-4 select-none">
             
-            {/* 1. Logo Mark (Icon) */}
-            <div
-              className={`shrink-0 flex items-center transition-all duration-700 ease-out ${
-                animating
-                  ? "opacity-100 scale-100 translate-x-0"
-                  : "opacity-0 scale-90 -translate-x-3"
-              }`}
-            >
-              <Image
-                src="/logo-mark.png"
-                alt="LPU PATH Logo"
-                width={88}
-                height={76}
-                className="h-14.5 sm:h-19 w-auto object-contain block"
-                priority
-              />
-            </div>
-
-            {/* 2. Vertical Divider Line */}
+            {/* 1. Vertical Line */}
             <div
               style={{
                 transitionDuration: "500ms",
                 transitionDelay: "100ms",
               }}
-              className={`w-[2.5px] sm:w-[3.5px] h-14.5 sm:h-19 bg-[#111111] rounded-full shrink-0 origin-center transition-all ease-out ${
+              className={`w-[3px] sm:w-[4px] h-14.5 sm:h-19 bg-[#111111] rounded-full shrink-0 origin-center transition-all ease-out ${
                 animating
                   ? "opacity-100 scale-y-100"
                   : "opacity-0 scale-y-0"
