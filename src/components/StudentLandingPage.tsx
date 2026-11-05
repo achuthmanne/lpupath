@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { CAMPUS_JOB_STATS } from "@/data/campusJobs";
+import { SENIOR_PLACEMENT_POSTS, SeniorPlacementPost } from "@/data/seniorPlacements";
+import InterviewBreakdownModal from "@/components/InterviewBreakdownModal";
 import {
   ArrowRight,
   Compass,
@@ -21,6 +23,10 @@ import {
   Award,
   Handshake,
   Star,
+  ExternalLink,
+  X,
+  Users,
+  Headphones,
 } from "lucide-react";
 
 interface StudentLandingPageProps {
@@ -290,6 +296,31 @@ function CampusStatCard({
   );
 }
 
+// Competitive Event / Hackathon Showcases (Sliding Carousel Data)
+const EVENT_SHOWCASES = [
+  {
+    id: "hackerrank",
+    name: "HackerRank",
+    logo: "/hackerrank-logo.png",
+    description:
+      "HackerRank is the industry-standard developer assessment and competitive programming platform. From university coding leagues to live hackathons, it enables students to solve real-world algorithmic problems, benchmark problem-solving speed, and unlock high-tier campus hiring opportunities.",
+    leaderName: "Vivek Ravisankar",
+    leaderRole: "Co-Founder & CEO, HackerRank",
+  },
+  {
+    id: "codechef",
+    name: "CodeChef",
+    logo: "/codechef-logo.png",
+    description:
+      "CodeChef is a premier competitive programming platform that hosts globally recognized monthly contests like Starters, Cook-Off, and Long Challenges. It fosters a thriving community of student developers preparing for ICPC, global Olympiads, and top-tier product engineering careers.",
+    leaderName: "Bhavin Turakhia",
+    leaderRole: "Founder, CodeChef",
+  },
+];
+
+// Continuous Forward-Only Loop (Clones first slide at end for seamless left-only scroll)
+const EXTENDED_SHOWCASES = [...EVENT_SHOWCASES, EVENT_SHOWCASES[0]];
+
 export default function StudentLandingPage({ email, onSignOut }: StudentLandingPageProps) {
   const [activePillar, setActivePillar] = useState(0);
   const [companyTab, setCompanyTab] = useState<"ranked" | "partners">("ranked");
@@ -297,7 +328,13 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
   const [isCarouselPaused, setIsCarouselPaused] = useState(false);
   const active = PILLARS[activePillar];
 
+  // Section 7 Event Showcase Sliding Carousel State (Strict Left-Only Infinite Scroll)
+  const [activeEventSlide, setActiveEventSlide] = useState(0);
+  const [enableSlideTransition, setEnableSlideTransition] = useState(true);
+  const [isEventSlidePaused, setIsEventSlidePaused] = useState(false);
+
   const currentCompanies = companyTab === "ranked" ? TOP_ORGANISATIONS : ESTEEMED_PARTNERS;
+  const [selectedPlacement, setSelectedPlacement] = useState<SeniorPlacementPost | null>(null);
 
   // Scroll-triggered viewport observer for Section 5 KPI stat cards
   const [statsViewTrigger, setStatsViewTrigger] = useState(0);
@@ -334,6 +371,28 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
   const handleCompanyTabChange = (tab: "ranked" | "partners") => {
     setCompanyTab(tab);
     setCompanyIdx(0);
+  };
+
+  // Auto-slide timer for Section 7 (Strict Left-Only Infinite Scroll, Never Rewinds)
+  useEffect(() => {
+    if (isEventSlidePaused) return;
+    const interval = setInterval(() => {
+      setEnableSlideTransition(true);
+      setActiveEventSlide((prev) => prev + 1);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [isEventSlidePaused]);
+
+  const handleSlideTransitionEnd = () => {
+    if (activeEventSlide >= EVENT_SHOWCASES.length) {
+      setEnableSlideTransition(false);
+      setActiveEventSlide(0);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setEnableSlideTransition(true);
+        });
+      });
+    }
   };
 
   return (
@@ -418,7 +477,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
               {/* Vector Image Slot: Sits flush directly on top of the metric cards */}
               <div className="relative w-full max-w-[460px] flex items-end justify-center -mb-2 z-10">
                 <Image
-                  src="/hero-placement-pathway.png?v=2"
+                  src="/hero-placement-pathway.png"
                   alt="LPU PATH Placement Intelligence Guide"
                   width={512}
                   height={341}
@@ -844,19 +903,374 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
             ))}
           </div>
 
-          {/* MINIMAL CORPORATE CTA BUTTON: LINK TO DEDICATED ON-CAMPUS JOBS PAGE */}
+          {/* MINIMAL CORPORATE CTA BUTTON: SOLID BG + NO ARROW + REFINED MEDIUM FONT WEIGHT */}
           <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/on-campus-jobs"
-              className="inline-flex items-center gap-3 px-8 sm:px-10 py-4 bg-[#111111] hover:bg-[#FF6500] text-white text-sm sm:text-base font-bold tracking-tight rounded-xs transition-all duration-200 shadow-sm hover:shadow-md group select-none cursor-pointer"
+              className="inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 bg-[#111111] text-white text-sm sm:text-base font-medium tracking-normal rounded-full transition-all duration-200 shadow-sm hover:shadow-md select-none cursor-pointer"
             >
-              <span>See On-Campus Jobs Available</span>
-              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1.5 transition-transform duration-200" />
+              See On-Campus Jobs Available
             </Link>
           </div>
 
         </div>
       </section>
+
+      {/* ============================================================== */}
+      {/* 6. ON-CAMPUS JOBS & PLACEMENT OFFERS POSTED BY SENIORS         */}
+      {/* ============================================================== */}
+      <section className="w-full bg-white border-t border-[#E4E4E7] py-20 lg:py-28 px-6 sm:px-12 lg:px-16 xl:px-24 relative overflow-hidden select-none">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          {/* Section Header */}
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-[1.15]">
+              On-Campus Job Offers <br />
+              <span className="text-[#FF6500]">Posted by Seniors.</span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-[#52525B] max-w-2xl mx-auto font-normal leading-relaxed">
+              Real company placement selections, job profiles, and package details secured directly on campus and shared by placed LPU seniors.
+            </p>
+          </div>
+
+          {/* FEED / CARDS GRID (VERTICAL SHARP MINIMAL CORPORATE CARDS - TOP 3 HIGHLIGHTS) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {SENIOR_PLACEMENT_POSTS.slice(0, 3).map((post) => (
+              <div
+                key={post.id}
+                className="bg-white border border-[#E4E4E7] hover:border-[#111111] rounded-xs p-6 sm:p-7 flex flex-col justify-between transition-all duration-200 select-none text-left h-full min-h-[390px] sm:min-h-[410px] shadow-sm group"
+              >
+                {/* 1. TOP: Senior Photo + Company Logo */}
+                <div className="flex items-center justify-between gap-4">
+                  {/* Senior Photo */}
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xs border border-[#E4E4E7] overflow-hidden shrink-0 bg-[#F4F4F5]">
+                    <Image
+                      src={post.avatar}
+                      alt={post.studentName}
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+
+                  {/* Company Logo Badge */}
+                  <div className="h-11 sm:h-12 w-28 sm:w-32 px-3 py-1.5 bg-[#F8F9FA] border border-[#E4E4E7] rounded-xs flex items-center justify-center shrink-0">
+                    <Image
+                      src={post.companyLogo}
+                      alt={post.companyName}
+                      width={120}
+                      height={32}
+                      className="max-h-7 max-w-[95px] sm:max-w-[105px] w-auto h-auto object-contain"
+                    />
+                  </div>
+                </div>
+
+                {/* 2. MIDDLE: Student Name + Role + Package (LOCKED HORIZONTAL ALIGNMENT) */}
+                <div className="my-6 space-y-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <span className="text-xs text-[#71717A] font-semibold block mb-1 truncate">
+                      {post.studentName}
+                    </span>
+                    <div className="h-[52px] sm:h-[56px] flex items-start">
+                      <h3 className="text-lg sm:text-xl font-black text-[#111111] tracking-tight leading-snug line-clamp-2">
+                        {post.role}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#71717A] block mb-1">
+                      Package
+                    </span>
+                    <div className="text-2xl sm:text-3xl font-black text-[#FF6500] tracking-tight tabular-nums">
+                      {post.totalCtc}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. BOTTOM: View Full Interview Breakdown Button */}
+                <div className="mt-auto pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPlacement(post)}
+                    className="w-full py-3.5 bg-[#111111] hover:bg-[#FF6500] text-white text-xs sm:text-sm font-medium rounded-xs transition-colors duration-200 text-center cursor-pointer select-none"
+                  >
+                    View Full Interview Breakdown
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* BOTTOM DUAL ACTIONS: VIEW MORE + SHARE YOUR PLACEMENT (PILL BUTTONS) */}
+          <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/on-campus-placements"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 bg-white hover:bg-[#F8F9FA] text-[#111111] text-sm sm:text-base font-medium tracking-normal border border-[#DCDCE0] hover:border-zinc-400 rounded-full transition-colors duration-150 select-none cursor-pointer"
+            >
+              View More Placements
+            </Link>
+
+            <Link
+              href="/share-placement"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 bg-[#FF6500] hover:bg-[#E55B00] text-white text-sm sm:text-base font-medium tracking-normal rounded-full transition-colors duration-150 select-none cursor-pointer"
+            >
+              Share Your Placement
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ============================================================== */}
+      {/* 7. HACKATHONS & COMPETITIVE EVENTS (ON-CAMPUS & EXTERNAL)      */}
+      {/* ============================================================== */}
+      <section className="w-full bg-[#FAFAFA] border-t border-[#E4E4E7] py-20 lg:py-28 px-6 sm:px-12 lg:px-16 xl:px-24 relative overflow-hidden select-none">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          {/* Section Header */}
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-[1.15]">
+              Competitions, Hackathons &amp; Hiring <br />
+              <span className="text-[#FF6500]">Compete. Build. Get Hired.</span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-[#52525B] max-w-2xl mx-auto font-normal leading-relaxed">
+              From intra-university hackathons and live coding contests to corporate hiring challenges and internships — discover every verified opportunity to build with peers, test your skills, and get recruited.
+            </p>
+          </div>
+
+          {/* CAROUSEL SHOWCASE RECTANGLE (STATIONARY OUTER RECTANGLE, SLIDING INNER ITEMS) */}
+          <div
+            onMouseEnter={() => setIsEventSlidePaused(true)}
+            onMouseLeave={() => setIsEventSlidePaused(false)}
+            className="w-full max-w-6xl mx-auto bg-[#EFEFEF] rounded-xs overflow-hidden relative select-none"
+          >
+            {/* Sliding Track: ALWAYS slides to the LEFT (Never rewinds or slides backward) */}
+            <div
+              onTransitionEnd={handleSlideTransitionEnd}
+              className={`flex w-full ${
+                enableSlideTransition ? "transition-transform duration-700 ease-in-out" : ""
+              }`}
+              style={{ transform: `translateX(-${activeEventSlide * 100}%)` }}
+            >
+              {EXTENDED_SHOWCASES.map((item, idx) => (
+                <div key={`${item.id}-${idx}`} className="w-full shrink-0">
+                  <div className="grid grid-cols-1 md:grid-cols-12 items-stretch min-h-[360px] sm:min-h-[400px]">
+                    
+                    {/* Left Column: Organization Logo */}
+                    <div className="md:col-span-4 lg:col-span-5 flex items-center justify-center p-8 sm:p-12 border-b md:border-b-0 md:border-r border-[#DCDCE0]">
+                      <div className="relative w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 drop-shadow-xs">
+                        <Image
+                          src={item.logo}
+                          alt={`${item.name} Logo`}
+                          fill
+                          className="object-contain"
+                          priority
+                        />
+                      </div>
+                    </div>
+
+                    {/* Right Column: Title, Event Description & Founder/Lead */}
+                    <div className="md:col-span-8 lg:col-span-7 p-8 sm:p-12 lg:p-14 flex flex-col justify-center space-y-4 text-left">
+                      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#111111] tracking-tight">
+                        {item.name}
+                      </h3>
+
+                      <p className="text-sm sm:text-base text-[#3F3F46] leading-relaxed font-normal">
+                        {item.description}
+                      </p>
+
+                      <div className="pt-3 border-t border-[#DCDCE0] space-y-0.5">
+                        <p className="text-sm sm:text-base font-bold text-[#111111]">
+                          {item.leaderName}
+                        </p>
+                        <p className="text-xs sm:text-sm font-medium text-[#71717A]">
+                          {item.leaderRole}
+                        </p>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* DUAL ACTIONS: EXPLORE EVENTS (FOR VIEWERS) + HOST AN EVENT (FOR ORGANIZERS) */}
+          <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/competitions"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 bg-white hover:bg-[#F8F9FA] text-[#111111] text-sm sm:text-base font-medium tracking-normal border border-[#DCDCE0] hover:border-zinc-400 rounded-full transition-colors duration-150 select-none cursor-pointer"
+            >
+              Explore Competitions &amp; Hiring
+            </Link>
+
+            <Link
+              href="/host-event"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 bg-[#111111] hover:bg-black text-white text-sm sm:text-base font-medium tracking-normal rounded-full transition-colors duration-150 select-none cursor-pointer"
+            >
+              Host an Event or Job
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ============================================================== */}
+      {/* 8. ON-CAMPUS PLACEMENT SUPPORT BY CAREER SERVICES              */}
+      {/* ============================================================== */}
+      <section className="w-full bg-white border-t border-[#E4E4E7] py-20 lg:py-28 px-6 sm:px-12 lg:px-16 xl:px-24 relative overflow-hidden select-none">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          {/* Section Header */}
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-[1.15]">
+              On-Campus Placement Support <br />
+              <span className="text-[#FF6500]">by Career Services.</span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-[#52525B] max-w-2xl mx-auto font-normal leading-relaxed">
+              Everything you need to navigate recruitment season on campus — interview venues in Block 32, UMS digital portal access, and official Career Services helpline contact.
+            </p>
+          </div>
+
+          {/* 3 CIRCLES CONTAINER (3 SIDE BY SIDE - 100% HORIZONTALLY ALIGNED) */}
+          <div className="pt-6 flex flex-wrap items-center justify-center gap-8 lg:gap-8 xl:gap-10">
+            
+            {/* CIRCLE 1: REPORTING & INTERVIEW VENUES (BLOCK 32) */}
+            <div className="w-[300px] h-[300px] sm:w-[340px] sm:h-[340px] xl:w-[360px] xl:h-[360px] rounded-full bg-white border border-[#D4D4D8] hover:border-[#111111] transition-all duration-300 p-6 sm:p-7 flex flex-col items-center justify-center text-center shadow-xs select-none shrink-0">
+              
+              {/* TOP: Large Outline Icon */}
+              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#FAFAFA] border border-[#D4D4D8] flex items-center justify-center text-[#111111] mb-2">
+                <Building2 className="w-6.5 h-6.5 sm:w-7 sm:h-7" strokeWidth={1.5} />
+              </div>
+
+              {/* Title (Fixed Height for Universal Horizontal Alignment) */}
+              <div className="h-11 sm:h-12 flex items-center justify-center px-2">
+                <h3 className="text-sm sm:text-base xl:text-lg font-black text-[#111111] tracking-tight leading-tight">
+                  Reporting &amp; Interview Venues
+                </h3>
+              </div>
+
+              {/* Middle Horizontal Divider Line (100% Level Across All 3 Circles) */}
+              <div className="w-40 sm:w-44 xl:w-48 h-[1px] bg-[#D4D4D8] my-3 sm:my-3.5" />
+
+              {/* BOTTOM: Landmark Rooms & Details */}
+              <div className="space-y-1 max-w-[240px] sm:max-w-[260px]">
+                <div className="h-9 sm:h-10 flex items-center justify-center">
+                  <p className="text-xs sm:text-sm font-bold text-[#111111]">
+                    Rooms 32-306 &amp; 32-405
+                  </p>
+                </div>
+                <div className="h-14 sm:h-16 flex items-start justify-center">
+                  <p className="text-[11px] sm:text-xs text-[#71717A] leading-relaxed">
+                    Specific placement drives and company recruitment interviews are hosted on-site in{" "}
+                    <span className="text-[#FF6500] font-semibold whitespace-nowrap">Block 32</span>.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* CIRCLE 2: DIGITAL ACCESS (UMS PORTAL) */}
+            <div className="w-[300px] h-[300px] sm:w-[340px] sm:h-[340px] xl:w-[360px] xl:h-[360px] rounded-full bg-white border border-[#D4D4D8] hover:border-[#111111] transition-all duration-300 p-6 sm:p-7 flex flex-col items-center justify-center text-center shadow-xs select-none shrink-0">
+              
+              {/* TOP: Large Outline Icon */}
+              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#FAFAFA] border border-[#D4D4D8] flex items-center justify-center text-[#111111] mb-2">
+                <Globe2 className="w-6.5 h-6.5 sm:w-7 sm:h-7" strokeWidth={1.5} />
+              </div>
+
+              {/* Title (Fixed Height for Universal Horizontal Alignment) */}
+              <div className="h-11 sm:h-12 flex items-center justify-center px-2">
+                <h3 className="text-sm sm:text-base xl:text-lg font-black text-[#111111] tracking-tight leading-tight">
+                  Digital Access
+                </h3>
+              </div>
+
+              {/* Middle Horizontal Divider Line (100% Level Across All 3 Circles) */}
+              <div className="w-40 sm:w-44 xl:w-48 h-[1px] bg-[#D4D4D8] my-3 sm:my-3.5" />
+
+              {/* BOTTOM: Landmark Rooms & Details */}
+              <div className="space-y-1 max-w-[240px] sm:max-w-[260px]">
+                <div className="h-9 sm:h-10 flex items-center justify-center">
+                  <p className="text-xs sm:text-sm font-bold text-[#111111]">
+                    Placement Services &gt; Placement Portal
+                  </p>
+                </div>
+                <div className="h-14 sm:h-16 flex items-start justify-center">
+                  <p className="text-[11px] sm:text-xs text-[#71717A] leading-relaxed">
+                    Access placement registration, CV uploads, and company updates online via the <br />
+                    <a
+                      href="https://ums.lpu.in"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#FF6500] font-semibold hover:underline whitespace-nowrap"
+                    >
+                      UMS Portal
+                    </a>.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* CIRCLE 3: HELPLINE CONTACT */}
+            <div className="w-[300px] h-[300px] sm:w-[340px] sm:h-[340px] xl:w-[360px] xl:h-[360px] rounded-full bg-white border border-[#D4D4D8] hover:border-[#111111] transition-all duration-300 p-6 sm:p-7 flex flex-col items-center justify-center text-center shadow-xs select-none shrink-0">
+              
+              {/* TOP: Large Outline Icon */}
+              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#FAFAFA] border border-[#D4D4D8] flex items-center justify-center text-[#111111] mb-2">
+                <Headphones className="w-6.5 h-6.5 sm:w-7 sm:h-7" strokeWidth={1.5} />
+              </div>
+
+              {/* Title (Fixed Height for Universal Horizontal Alignment) */}
+              <div className="h-11 sm:h-12 flex items-center justify-center px-2">
+                <h3 className="text-sm sm:text-base xl:text-lg font-black text-[#111111] tracking-tight leading-tight">
+                  Helpline Contact
+                </h3>
+              </div>
+
+              {/* Middle Horizontal Divider Line (100% Level Across All 3 Circles) */}
+              <div className="w-40 sm:w-44 xl:w-48 h-[1px] bg-[#D4D4D8] my-3 sm:my-3.5" />
+
+              {/* BOTTOM: Landmark Rooms & Details */}
+              <div className="space-y-1 max-w-[240px] sm:max-w-[260px]">
+                <div className="h-9 sm:h-10 flex items-center justify-center">
+                  <p className="text-xs sm:text-sm font-bold text-[#111111]">
+                    <a
+                      href="tel:+911824444500"
+                      className="hover:text-[#FF6500] transition-colors"
+                    >
+                      +91-1824-444500
+                    </a>
+                  </p>
+                </div>
+                <div className="h-14 sm:h-16 flex items-start justify-center">
+                  <p className="text-[11px] sm:text-xs text-[#71717A] leading-relaxed">
+                    For direct inquiries with the placement/career services office or email{" "}
+                    <a
+                      href="mailto:placement@lpu.co.in"
+                      className="text-[#FF6500] font-semibold hover:underline"
+                    >
+                      placement@lpu.co.in
+                    </a>.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* INTERACTIVE FULL INTERVIEW BREAKDOWN MODAL */}
+      <InterviewBreakdownModal
+        placement={selectedPlacement}
+        onClose={() => setSelectedPlacement(null)}
+      />
 
     </div>
   );

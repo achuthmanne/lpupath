@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
 import {
   CAMPUS_JOB_STATS,
   CAMPUS_AVAILABLE_JOBS,
@@ -11,12 +11,8 @@ import {
   UMS_NAVIGATION_LINKS,
 } from "@/data/campusJobs";
 import {
-  ArrowLeft,
   ChevronRight,
   Star,
-  Briefcase,
-  Layers,
-  GraduationCap,
   ExternalLink,
 } from "lucide-react";
 
@@ -82,7 +78,7 @@ function CountUp({
   );
 }
 
-// Interactive Card with Scroll-Triggered & Mouse Hover-Triggered Count Animation
+// Plain Borderless KPI Metric Card
 function CampusStatCard({
   stat,
   viewTrigger,
@@ -97,7 +93,7 @@ function CampusStatCard({
   return (
     <div
       onMouseEnter={() => setHoverTrigger((h) => h + 1)}
-      className={`${stat.bgClass} ${stat.borderClass} ${stat.hoverClass} border rounded-xs p-6 sm:p-7 min-h-[140px] flex flex-col justify-start transition-all duration-200 hover:-translate-y-1 hover:shadow-sm select-none text-left cursor-pointer group`}
+      className={`${stat.bgClass} rounded-xs p-6 sm:p-7 min-h-[140px] flex flex-col justify-start transition-all duration-200 hover:-translate-y-1 hover:shadow-sm select-none text-left cursor-pointer group`}
     >
       <div
         className={`text-3xl sm:text-4xl lg:text-[42px] font-black ${stat.numberColor} tracking-tight leading-none mb-3 tabular-nums transition-transform duration-200 group-hover:scale-105 origin-left`}
@@ -143,50 +139,49 @@ export default function OnCampusJobsPage() {
 
   return (
     <div className="min-h-screen bg-white text-[#111111] flex flex-col font-sans selection:bg-[#FF6500] selection:text-white">
-      {/* 1. TOP NAVBAR */}
-      <Navbar />
-
-      {/* 2. SUB-BAR WITH BACK NAVIGATION & BREADCRUMBS */}
-      <div className="w-full bg-[#FAFAFA] border-b border-[#E4E4E7] py-3.5 px-6 sm:px-12 lg:px-16 xl:px-24">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#111111] hover:text-[#FF6500] transition group"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span>Back to Overview</span>
-          </Link>
-
-          <div className="hidden sm:flex items-center gap-2 text-xs text-[#71717A] font-semibold">
-            <span>UMS Integration</span>
-            <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
-            <span className="text-[#111111] font-bold">On-Campus Jobs Directory</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. MAIN SECTION */}
-      <main className="flex-1 w-full bg-[#FAFAFA] py-12 sm:py-16 lg:py-20 px-6 sm:px-12 lg:px-16 xl:px-24 relative overflow-hidden select-none">
+      {/* MAIN SECTION */}
+      <main className="flex-1 w-full bg-[#FAFAFA] py-16 sm:py-20 lg:py-24 px-6 sm:px-12 lg:px-16 xl:px-24 relative overflow-hidden select-none">
         <div className="max-w-7xl mx-auto space-y-16">
           
-          {/* Page Header */}
-          <div className="max-w-3xl mx-auto text-center space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-[#E4E4E7] rounded-xs text-[11px] font-bold tracking-widest uppercase text-[#FF6500]">
-              <Briefcase className="w-3.5 h-3.5" />
-              <span>Earn While You Learn on Campus</span>
+          {/* Page Header (Left: Single Line Title + Matter | Right: Vector Artwork with Baseline Line) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center text-left">
+            
+            {/* Left Content Column */}
+            <div className="lg:col-span-7 xl:col-span-7 space-y-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-[48px] xl:text-[52px] font-black text-[#111111] tracking-tight leading-none whitespace-nowrap">
+                Earn While You <span className="text-[#FF6500]">Learn</span>
+              </h1>
+
+              <div className="space-y-2.5 max-w-xl text-[#52525B] text-sm sm:text-base leading-relaxed font-normal">
+                <p>
+                  Students have the option to work part-time jobs on campus to help make college more affordable while gaining verified professional experience across various university divisions.
+                </p>
+                <p className="text-xs sm:text-sm text-[#71717A]">
+                  Explore verified campus work profiles, stipend guidelines, step-by-step onboarding workflows, and official UMS registration procedures.
+                </p>
+              </div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-[46px] font-black text-[#111111] tracking-tight leading-[1.15]">
-              On-Campus Available Jobs <br />
-              <span className="text-[#FF6500]">&amp; Student Assistantships.</span>
-            </h1>
+            {/* Right Vector Illustration with Horizontal Cut Baseline */}
+            <div className="lg:col-span-5 xl:col-span-5 flex flex-col items-center justify-center lg:justify-end">
+              <div className="relative w-full max-w-[460px] flex flex-col items-center">
+                <Image
+                  src="/campus-assistants-vector.png"
+                  alt="LPU PATH Campus Student Assistants - Earn While You Learn"
+                  width={512}
+                  height={341}
+                  className="w-full h-auto object-contain block"
+                  priority
+                  unoptimized
+                />
+                {/* Horizontal Cut Line */}
+                <div className="w-full h-[2px] bg-[#111111] -mt-[1px]" />
+              </div>
+            </div>
 
-            <p className="text-sm sm:text-base text-[#52525B] max-w-2xl mx-auto font-normal leading-relaxed">
-              Students have the option to work part-time jobs on campus to help make college more affordable while gaining verified professional experience across various university divisions.
-            </p>
           </div>
 
-          {/* 4 HORIZONTAL KEY METRIC CARDS */}
+          {/* 4 HORIZONTAL KEY METRIC CARDS (BORDERLESS PLAIN COLORS) */}
           <div
             ref={statsSectionRef}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5 max-w-7xl mx-auto"
@@ -205,19 +200,9 @@ export default function OnCampusJobsPage() {
           {/* ON CAMPUS AVAILABLE JOBS (16 VERIFIED PROFILES)           */}
           {/* ========================================================= */}
           <div className="pt-6 sm:pt-10 space-y-6 text-left">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E4E4E7] pb-4">
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
-                  On Campus Available Jobs
-                </h2>
-                <p className="text-xs sm:text-sm text-[#71717A] mt-1 font-medium">
-                  16 verified student assistantship roles offered across academic and administrative departments
-                </p>
-              </div>
-              <div className="text-xs font-mono font-bold text-[#FF6500] uppercase tracking-wider">
-                16 Profiles Listed
-              </div>
-            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              On Campus Available Jobs
+            </h2>
 
             {/* 4 Cards Per Row Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
@@ -245,14 +230,9 @@ export default function OnCampusJobsPage() {
           {/* PROCESS FLOW OF PART-TIME JOB (4 STEPS HORIZONTAL FLOW)  */}
           {/* ========================================================= */}
           <div className="pt-8 sm:pt-12 space-y-6 text-left">
-            <div className="border-b border-[#E4E4E7] pb-4">
-              <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
-                Process Flow of Part-time Job
-              </h2>
-              <p className="text-xs sm:text-sm text-[#71717A] mt-1 font-medium">
-                Official university onboarding workflow from initial announcement to final HR joining
-              </p>
-            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              Process Flow of Part-time Job
+            </h2>
 
             {/* 4 Cards In A Row (Linear Process Flow) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
@@ -291,14 +271,9 @@ export default function OnCampusJobsPage() {
           {/* STUDENT'S WORK ELIGIBILITY CRITERIA (POINTS WITH STARS)   */}
           {/* ========================================================= */}
           <div className="pt-8 sm:pt-12 space-y-6 text-left">
-            <div className="border-b border-[#E4E4E7] pb-4">
-              <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
-                Student’s Work Eligibility Criteria:
-              </h2>
-              <p className="text-xs sm:text-sm text-[#71717A] mt-1 font-medium">
-                Mandatory criteria required by the Division of Student Welfare before applying
-              </p>
-            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              Student’s Work Eligibility Criteria:
+            </h2>
 
             {/* Direct Points with Filled Black Stars */}
             <div className="space-y-4 sm:space-y-5 select-none pl-1">
@@ -317,14 +292,9 @@ export default function OnCampusJobsPage() {
           {/* IMPORTANT LINKS (UMS STEP-BY-STEP NAVIGATION BREADCRUMBS) */}
           {/* ========================================================= */}
           <div className="pt-8 sm:pt-12 space-y-6 text-left">
-            <div className="border-b border-[#E4E4E7] pb-4">
-              <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
-                Important Links &amp; UMS Navigation
-              </h2>
-              <p className="text-xs sm:text-sm text-[#71717A] mt-1 font-medium">
-                Step-by-step breadcrumb paths to register and review official policy in University Management System
-              </p>
-            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              Important Links
+            </h2>
 
             {/* 2 Wide Monospace Breadcrumb Navigation Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
@@ -367,20 +337,32 @@ export default function OnCampusJobsPage() {
                 </div>
               ))}
             </div>
+
+            {/* Centered Orange UMS Action Button */}
+            <div className="pt-6 sm:pt-8 flex justify-center">
+              <a
+                href="https://ums.lpu.in/lpuums/frmPartTimeJobs.aspx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-3.5 sm:py-4 bg-[#FF6500] hover:bg-[#E55B00] text-white text-sm sm:text-base font-medium rounded-full shadow-sm hover:shadow-md transition-all duration-200 select-none cursor-pointer group"
+              >
+                <span>Apply Now — Open UMS</span>
+                <ExternalLink className="w-4 h-4 text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </a>
+            </div>
           </div>
 
           {/* Bottom Back to Home CTA */}
           <div className="pt-12 sm:pt-16 pb-8 border-t border-[#E4E4E7] flex flex-col sm:flex-row items-center justify-between gap-4">
             <Link
               href="/"
-              className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-[#111111] hover:bg-[#FF6500] text-white text-sm font-bold rounded-xs transition-colors group"
+              className="inline-flex items-center justify-center px-7 py-3 bg-[#111111] text-white text-sm font-medium rounded-full transition-all duration-200 select-none cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span>Back to Overview</span>
+              Back to Overview
             </Link>
 
             <p className="text-xs text-[#71717A] font-semibold text-center sm:text-right">
-              Lovely Professional University — On-Campus Placement &amp; Employment Intelligence
+              LPU PATH — On-Campus Placement &amp; Employment Intelligence
             </p>
           </div>
 
