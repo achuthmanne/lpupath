@@ -630,12 +630,13 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
               {/* Vector Image Slot: Sits flush directly on top of the metric cards */}
               <div className="relative w-full max-w-[460px] flex items-end justify-center -mb-2 z-10">
                 <Image
-                  src="/hero-pathway-guide.png"
+                  src="/hero-placement-pathway.png?v=2"
                   alt="LPU PATH Placement Intelligence Guide"
                   width={512}
                   height={341}
                   className="w-full h-auto object-contain block"
                   priority
+                  unoptimized
                 />
               </div>
 
