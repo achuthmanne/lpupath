@@ -1386,7 +1386,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
           {/* Section Header */}
           <div className="max-w-3xl mx-auto text-center space-y-4">
             <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-[1.15]">
-              LPU PATH. <br />
+              LPU PATH <br />
               <span className="text-[#FF6500]">Built for Students.</span>
             </h2>
 
@@ -1400,10 +1400,6 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
             
             {/* Mission 01 */}
             <div className="space-y-3 text-left">
-              <div className="flex items-center gap-2.5">
-                <span className="text-xs font-black text-[#FF6500] font-mono tracking-wider">01</span>
-                <span className="w-8 h-[1px] bg-[#E4E4E7]" />
-              </div>
               <h3 className="text-lg sm:text-xl font-bold text-[#111111] tracking-tight">
                 Learn Before Your Turn
               </h3>
@@ -1414,10 +1410,6 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
 
             {/* Mission 02 */}
             <div className="space-y-3 text-left">
-              <div className="flex items-center gap-2.5">
-                <span className="text-xs font-black text-[#FF6500] font-mono tracking-wider">02</span>
-                <span className="w-8 h-[1px] bg-[#E4E4E7]" />
-              </div>
               <h3 className="text-lg sm:text-xl font-bold text-[#111111] tracking-tight">
                 Company-to-Skill Truth
               </h3>
@@ -1428,10 +1420,6 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
 
             {/* Mission 03 */}
             <div className="space-y-3 text-left">
-              <div className="flex items-center gap-2.5">
-                <span className="text-xs font-black text-[#FF6500] font-mono tracking-wider">03</span>
-                <span className="w-8 h-[1px] bg-[#E4E4E7]" />
-              </div>
               <h3 className="text-lg sm:text-xl font-bold text-[#111111] tracking-tight">
                 Peer Power &amp; Transparent CTC
               </h3>
@@ -1444,9 +1432,9 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
 
           {/* OFFICIAL INDEPENDENT PLATFORM DECLARATION */}
           <div className="pt-4">
-            <div className="bg-white border border-[#E4E4E7] rounded-xs p-6 sm:p-7 text-left shadow-2xs">
+            <div className="bg-white border border-[#E4E4E7] rounded-xs p-6 sm:p-7 text-left">
               <p className="text-xs sm:text-sm text-[#71717A] leading-relaxed font-normal">
-                <strong>LPU PATH</strong> is an autonomous, open knowledge project created independently by students and alumni to advance campus placement transparency. It is <strong>not an official university portal, nor is it endorsed, authorized, sponsored, affiliated, or maintained by Lovely Professional University (LPU)</strong>. All university trademarks, logos, and academic brand names belong exclusively to their respective owners.
+                <strong className="text-[#111111] font-semibold">LPU PATH</strong> is an autonomous, open knowledge project created independently by students and alumni to advance campus placement transparency. It is <strong className="text-[#111111] font-semibold">not an official university portal, nor is it endorsed, authorized, sponsored, affiliated, or maintained by Lovely Professional University (LPU)</strong>. All university trademarks, logos, and academic brand names belong exclusively to their respective owners.
               </p>
             </div>
           </div>
