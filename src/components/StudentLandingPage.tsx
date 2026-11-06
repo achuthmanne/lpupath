@@ -915,7 +915,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
                           company.id === "microsoft"
                             ? "max-h-9 sm:max-h-11 lg:max-h-12 max-w-[150px] sm:max-w-[180px] lg:max-w-[210px]"
                             : company.id === "google"
-                            ? "max-h-12 sm:max-h-15 lg:max-h-18 max-w-[170px] sm:max-w-[210px] lg:max-w-[240px]"
+                            ? "max-h-7 sm:max-h-8 lg:max-h-9 max-w-[125px] sm:max-w-[145px] lg:max-w-[165px]"
                             : "max-h-20 sm:max-h-26 lg:max-h-30 max-w-[260px] sm:max-w-[320px] lg:max-w-[380px]"
                         } w-auto object-contain transition-all duration-500 pointer-events-none drop-shadow-none`}
                         priority
