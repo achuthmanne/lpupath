@@ -27,6 +27,7 @@ import {
   X,
   Users,
   Headphones,
+  ChevronDown,
 } from "lucide-react";
 
 interface StudentLandingPageProps {
@@ -321,6 +322,107 @@ const EVENT_SHOWCASES = [
 // Continuous Forward-Only Loop (Clones first slide at end for seamless left-only scroll)
 const EXTENDED_SHOWCASES = [...EVENT_SHOWCASES, EVENT_SHOWCASES[0]];
 
+// Official LPU Placement FAQ Records
+const PLACEMENT_FAQS = [
+  {
+    id: "disciplines",
+    number: "01",
+    question: "Are placement opportunities available for all disciplines and programmes?",
+    answer:
+      "LPU provides placement opportunities for students across all UG/PG/Diploma programs under various disciplines including Computer Science, Computer Applications, Electronics & Electrical Engineering, Mechanical Engineering, Civil Engineering, Polytechnic, Bioengineering & Biosciences, Agriculture, Physical Sciences, Pharmacy & Allied Medical Sciences, Management, Hotel Management & Tourism, Architecture & Planning, Interior & Product Design, Fashion, Multimedia, Journalism, Film and Theatre, Fine Arts, Social Sciences & Languages, Education, Physical Education and Law. The university's Division of Career Services plays a vital role in connecting students with top recruiters across various industries, offering dedicated support to help them secure rewarding career opportunities while completing their studies.",
+  },
+  {
+    id: "eligibility",
+    question: "What is the minimum eligibility criteria for LPU placement?",
+    answer:
+      "Students who opt for job placement support and meet the minimum eligibility criteria defined by respective companies are allowed for campus recruitment drives organized by the university.",
+  },
+  {
+    id: "training-timeline",
+    question: "How early does the university start placement training for students?",
+    answer:
+      "From the very first year of the program, LPU begins placement training to equip students with essential skills for their future careers. This comprehensive training covers language proficiency, interpersonal skills, critical thinking, reasoning, and communication abilities. Students also receive focused instruction in problem-solving, presentation skills, emotional intelligence, and professional writing, all integrated seamlessly into the curriculum.\n\nIn addition, students undergo a Diagnostic Test to assess their proficiency in English and aptitude, with leveled inputs provided based on their individual performance. This ensures targeted support and development in areas where students may need improvement.\n\nAs students progress through the program, they continue to receive training and assessments via a non-credited Professional Enhancement Program (PEP). This program supplements their academic coursework, helping them build vital skills and ensuring they are well-prepared for placement opportunities.",
+  },
+  {
+    id: "highest-placement-courses",
+    question: "Which course has highest placement in LPU?",
+    answer:
+      "Placement opportunities at LPU are at par across all courses in terms of percentage. Almost all students interested and eligible for placements are able to secure placements in jobs and internship. However, in terms of the number of placements, programmes under disciplines of Computer Science/Computer Applications, MBA, Hotel Management & Tourism tend to have the higher placement numbers with diverse companies hiring from these disciplines followed by those in core engineering, design, liberal arts and allied sciences.",
+  },
+  {
+    id: "cse-placement-percentage",
+    question: "What is the average placement percentage of CSE/IT students at LPU?",
+    answer:
+      "Average placement percentage ranges between 90% to 95% of CSE/IT students interested and eligible for placements.",
+  },
+  {
+    id: "mba-placement-percentage",
+    question: "What is the average placement percentage of MBA students at LPU?",
+    answer:
+      "Average placement percentage ranges between 90% to 95% of MBA students interested and eligible for placements.",
+  },
+  {
+    id: "top-recruiters",
+    question: "Which top companies regularly recruit students from the university?",
+    answer:
+      "Google, Microsoft, Amazon, Accenture, CISCO, TCS, Capgemini, Cognizant, Autodesk, Infosys, PWC, bp, Opentext, Optmyzr, Xperi, VMware, KPIT, Federal Bank, Trident, JP Morgan, E&Y, Bosch, Infineon, HCL, YUBI, Whatfix, HP, Highradius, Hitachi, Havells, LG, BSH, Hettich, Generic Electric, Adani Group, Samsung, Hindustan Uniliver Limited, Juspay, Tata Technologies, Tech Mahindra, BNY, Reliance Group, Colgate-Palmolive, Godrej, Abbott, CIPLA, Uniqlo, CEAT, MRF, Virtusa, Aditya Birla Group, Indigo, JW Marriott, Taj Hotels, P&O Cruises, etc. are among the several companies regularly recruiting LPU students.",
+  },
+  {
+    id: "highest-package-offered",
+    question: "What is the highest package offered to any student in the placement drives?",
+    answer:
+      "LPU student is placed at a CTC of more than Rs 3 Cr with a prominent company in Germany. The highest domestic placement package secured by LPU student through is Rs 62.72 Lakhs.",
+  },
+  {
+    id: "training-programs-cpe",
+    question: "What kind of training programs are available to prepare students for placements?",
+    answer:
+      "The University offers comprehensive placement support through its dedicated Centre for Professional Enhancement (CPE), which boasts over 150 trainers committed to refining students' technical, aptitude, and soft skills. The tailor-made Professional Enhancement Program (PEP) run by CPE includes industry-benchmark assessments, mock interviews, group discussions, aptitude tests, and domain-specific training, ensuring students are well-prepared for recruitment processes. Regular career counselling sessions, guest lectures, and workshops on resume building, interview techniques, and soft skills development are conducted across all disciplines. The University's outstanding efforts have been recognized with the National Employability Award 2025 for the fifth consecutive year. This holistic support system, which encompasses industry-standard training programs, expert-led career counselling, rigorous assessments, and advanced practice platforms, effectively bridges the gap between academic knowledge and industry requirements, significantly enhancing students' employability and career success.",
+  },
+  {
+    id: "international-tie-ups",
+    question: "Does the university have tie-ups with companies for international placements?",
+    answer:
+      "LPU has strong tie-ups with companies for international placements and internships across various countries, including the US, UK, Japan, Europe, the Indian subcontinent, and the Middle East. Students have secured lucrative international offers from renowned companies such as JTP, Shangri-La, Marriott, Indicaa Group, Al Rakha Group among several others, providing global career opportunities for LPU graduates across different disciplines.",
+  },
+  {
+    id: "non-technical-placements",
+    question: "What is the placement scenario for non-technical courses?",
+    answer:
+      "LPU offers a wide range of placement opportunities for non-technical courses as well. The university maintains strong industry connections and collaborates with leading companies in these fields to provide placements in job and internships. Students from these programs are recruited by top companies and organizations relevant to their disciplines, ensuring they have access to career opportunities in both domestic and international markets.\n\nNaming a few instances, B.Arch students have been selected by Autodesk; MBA students by Trident, Federal Bank, Ujjivan Small Finance Bank etc.; Multimedia students by Optmyzr, Opentext etc.; Fashion students selected by Trident Group, Nike India etc.; Social Sciences and Education students selected by Cambridge International Schools, Ivy World School etc. Agriculture students has been placed at companies like Adani Wilmar, Nutraj, etc. Pharma students by CIPLA, and many more.",
+  },
+  {
+    id: "off-campus-support",
+    question: "Are off-campus placements offered in LPU?",
+    answer:
+      "LPU supports students by providing various off-campus placement opportunities. The university works closely with industry partners to help students have access a wide range of career options, including both domestic and international placements. Students are guided and encouraged to explore various opportunities through competitive events and other platforms, ensuring they gain practical experience and secure promising placement offers.",
+  },
+  {
+    id: "internship-opportunities",
+    question: "Does the university provide internships during the course of study?",
+    answer:
+      "LPU gives significant importance on internships for the students and the curriculum is designed to provide students with ample opportunities for real-world industry exposure. Students gain practical experience through internships, live projects, competitive events, and other industry engagement initiatives. The duration of internships varies from 4 to 6 weeks short-term internships to 4 to 6 months full-semester internships during the final year of various programs. These internships ensure that students are well-prepared for the professional world and gain a early foothold of the corporate world.",
+  },
+  {
+    id: "international-students-eligibility",
+    question: "Can international students participate in placements?",
+    answer:
+      "Yes, International students from various countries like Nepal, Bhutan, Bangladesh and African region enrolled for university placements support are selected by companies like Capgemini, Accenture, Cognizant, Radisson Blu, Fortis Hospital and Shangri-La Muscat Oman etc.",
+  },
+  {
+    id: "higher-studies-foreign-assistance",
+    question: "Does LPU assist in higher studies or foreign placements?",
+    answer:
+      "Lovely Professional University assist in higher studies and foreign placements through career services, alumni networks, and academic advisors who provide guidance on scholarships, test preparation, and research opportunities. Varsity's placement cell connects students with global employers and internships. Moreover, partnerships with foreign institutions also facilitate exchange programs and job opportunities abroad.",
+  },
+  {
+    id: "startups-entrepreneurship-support",
+    question: "How does LPU support students in start-ups or entrepreneurship?",
+    answer:
+      "Lovely Professional University (LPU) fosters entrepreneurial excellence through its Division of Innovation and Entrepreneurship and state-of-the-art incubation centers. With 300+ startups launched globally, LPU empowers students with funding, mentorship, and resources to transform their ideas into successful ventures.\n\nLPU has supported startups that generated ₹25+ crore revenue, creating 1000+ jobs worldwide. Students have excelled in initiatives like Smart India Hackathon, showcasing innovation and securing startup opportunities. By combining academic rigor with real-world exposure, LPU shapes future-ready entrepreneurs.",
+  },
+];
+
 export default function StudentLandingPage({ email, onSignOut }: StudentLandingPageProps) {
   const [activePillar, setActivePillar] = useState(0);
   const [companyTab, setCompanyTab] = useState<"ranked" | "partners">("ranked");
@@ -335,6 +437,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
 
   const currentCompanies = companyTab === "ranked" ? TOP_ORGANISATIONS : ESTEEMED_PARTNERS;
   const [selectedPlacement, setSelectedPlacement] = useState<SeniorPlacementPost | null>(null);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   // Scroll-triggered viewport observer for Section 5 KPI stat cards
   const [statsViewTrigger, setStatsViewTrigger] = useState(0);
@@ -1237,14 +1340,22 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
               {/* BOTTOM: Landmark Rooms & Details */}
               <div className="space-y-1 max-w-[240px] sm:max-w-[260px]">
                 <div className="h-9 sm:h-10 flex items-center justify-center">
-                  <p className="text-xs sm:text-sm font-bold text-[#111111]">
+                  <div className="inline-flex flex-col items-start text-left space-y-0.5">
+                    <a
+                      href="tel:+919915020421"
+                      className="text-[11px] sm:text-xs font-bold text-[#111111] hover:text-[#FF6500] transition-colors leading-tight whitespace-nowrap inline-flex items-center gap-1.5"
+                    >
+                      <span>+91</span>
+                      <span>9915020421</span>
+                    </a>
                     <a
                       href="tel:+911824444500"
-                      className="hover:text-[#FF6500] transition-colors"
+                      className="text-[11px] sm:text-xs font-bold text-[#111111] hover:text-[#FF6500] transition-colors leading-tight whitespace-nowrap inline-flex items-center gap-1.5"
                     >
-                      +91-1824-444500
+                      <span>+91</span>
+                      <span>1824-444500</span>
                     </a>
-                  </p>
+                  </div>
                 </div>
                 <div className="h-14 sm:h-16 flex items-start justify-center">
                   <p className="text-[11px] sm:text-xs text-[#71717A] leading-relaxed">
@@ -1261,6 +1372,73 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
 
             </div>
 
+          </div>
+
+        </div>
+      </section>
+
+            {/* ============================================================== */}
+      {/* 9. FREQUENTLY ASKED QUESTIONS                                   */}
+      {/* ============================================================== */}
+      <section className="w-full bg-[#FAFAFA] border-t border-[#E4E4E7] py-20 lg:py-28 px-6 sm:px-12 lg:px-16 xl:px-24 relative overflow-hidden select-none">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          {/* Section Header */}
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-[1.15]">
+              Frequently Asked Questions <br />
+              <span className="text-[#FF6500]">Clarified for Students.</span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-[#52525B] max-w-2xl mx-auto font-normal leading-relaxed">
+              Official policies, eligibility norms, drive registrations, and placement guidelines directly from Career Services.
+            </p>
+          </div>
+
+          {/* FAQ Linear Accordion List (Full Width, Zero Boxes) */}
+          <div className="w-full divide-y divide-[#E4E4E7] border-y border-[#E4E4E7] mt-8">
+            {PLACEMENT_FAQS.map((faq, idx) => {
+              const isOpen = openFaqIndex === idx;
+              return (
+                <div key={faq.id} className="w-full py-5 sm:py-6 transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    className="w-full flex items-center justify-between text-left gap-6 cursor-pointer select-none group"
+                  >
+                    <h3 className="text-sm sm:text-base font-bold text-[#111111] group-hover:text-[#FF6500] transition-colors tracking-tight leading-snug pr-4">
+                      {faq.question}
+                    </h3>
+                    <div className="shrink-0 text-[#71717A] group-hover:text-[#111111] transition-colors">
+                      <ChevronDown
+                        className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 ease-in-out ${
+                          isOpen ? "rotate-180 text-[#FF6500]" : ""
+                        }`}
+                      />
+                    </div>
+                  </button>
+
+                  {/* Smooth Slide-Down & Slide-Up Container (Physical Downward Expansion) */}
+                  <div
+                    className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div
+                        className={`pt-5 pb-3 pr-4 sm:pr-12 transition-transform duration-300 ease-out ${
+                          isOpen ? "translate-y-0" : "-translate-y-3"
+                        }`}
+                      >
+                        <p className="text-xs sm:text-sm text-[#52525B] leading-relaxed font-normal whitespace-pre-line">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
         </div>
