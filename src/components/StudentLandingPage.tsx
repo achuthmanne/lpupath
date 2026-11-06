@@ -1377,10 +1377,87 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
         </div>
       </section>
 
-            {/* ============================================================== */}
-      {/* 9. FREQUENTLY ASKED QUESTIONS                                   */}
+                  {/* ============================================================== */}
+      {/* 9. ABOUT LPU PATH & INDEPENDENT PLATFORM MANIFESTO             */}
       {/* ============================================================== */}
       <section className="w-full bg-[#FAFAFA] border-t border-[#E4E4E7] py-20 lg:py-28 px-6 sm:px-12 lg:px-16 xl:px-24 relative overflow-hidden select-none">
+        <div className="max-w-7xl mx-auto space-y-16">
+          
+          {/* Section Header */}
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-[1.15]">
+              LPU PATH. <br />
+              <span className="text-[#FF6500]">Built for Students.</span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-[#52525B] max-w-2xl mx-auto font-normal leading-relaxed">
+              Transparent senior interview intelligence, verified CTC breakdowns, and exact company expectations — prepared years before your placement drive arrives.
+            </p>
+          </div>
+
+          {/* 3 MISSION PILLARS (CLEAN HORIZONTAL ROW, NOT CARDS) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 pt-6 border-t border-[#E4E4E7]">
+            
+            {/* Mission 01 */}
+            <div className="space-y-3 text-left">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xs font-black text-[#FF6500] font-mono tracking-wider">01</span>
+                <span className="w-8 h-[1px] bg-[#E4E4E7]" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-[#111111] tracking-tight">
+                Learn Before Your Turn
+              </h3>
+              <p className="text-xs sm:text-sm text-[#52525B] leading-relaxed font-normal">
+                Don&apos;t wait until final-year drives arrive at Block 32 to realize what recruiters test. By mastering real interview rounds and coding problems shared by placed seniors during your 1st, 2nd, and 3rd year, you turn placement day into a prepared milestone rather than a stressful surprise.
+              </p>
+            </div>
+
+            {/* Mission 02 */}
+            <div className="space-y-3 text-left">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xs font-black text-[#FF6500] font-mono tracking-wider">02</span>
+                <span className="w-8 h-[1px] bg-[#E4E4E7]" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-[#111111] tracking-tight">
+                Company-to-Skill Truth
+              </h3>
+              <p className="text-xs sm:text-sm text-[#52525B] leading-relaxed font-normal">
+                Generic syllabus guidance isn&apos;t enough to crack high-tier product roles. We map exact technological expectations, system design questions, and DSA benchmarks demanded by Google, Juspay, Bosch, and Cognizant so your preparation aligns 1:1 with ground reality.
+              </p>
+            </div>
+
+            {/* Mission 03 */}
+            <div className="space-y-3 text-left">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xs font-black text-[#FF6500] font-mono tracking-wider">03</span>
+                <span className="w-8 h-[1px] bg-[#E4E4E7]" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-[#111111] tracking-tight">
+                Peer Power &amp; Transparent CTC
+              </h3>
+              <p className="text-xs sm:text-sm text-[#52525B] leading-relaxed font-normal">
+                Cut through inflated marketing numbers with verified base vs. variable compensation breakdowns. A completely student-first intelligence network where senior engineers and analysts pay it forward to empower the next batch of campus achievers.
+              </p>
+            </div>
+
+          </div>
+
+          {/* OFFICIAL INDEPENDENT PLATFORM DECLARATION */}
+          <div className="pt-4">
+            <div className="bg-white border border-[#E4E4E7] rounded-xs p-6 sm:p-7 text-left shadow-2xs">
+              <p className="text-xs sm:text-sm text-[#71717A] leading-relaxed font-normal">
+                <strong>LPU PATH</strong> is an autonomous, open knowledge project created independently by students and alumni to advance campus placement transparency. It is <strong>not an official university portal, nor is it endorsed, authorized, sponsored, affiliated, or maintained by Lovely Professional University (LPU)</strong>. All university trademarks, logos, and academic brand names belong exclusively to their respective owners.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ============================================================== */}
+      {/* 10. FREQUENTLY ASKED QUESTIONS (FAQ)                           */}
+      {/* ============================================================== */}
+      <section className="w-full bg-white border-t border-[#E4E4E7] py-20 lg:py-28 px-6 sm:px-12 lg:px-16 xl:px-24 relative overflow-hidden select-none">
         <div className="max-w-7xl mx-auto space-y-12">
           
           {/* Section Header */}
@@ -1444,7 +1521,7 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
         </div>
       </section>
 
-      {/* INTERACTIVE FULL INTERVIEW BREAKDOWN MODAL */}
+{/* INTERACTIVE FULL INTERVIEW BREAKDOWN MODAL */}
       <InterviewBreakdownModal
         placement={selectedPlacement}
         onClose={() => setSelectedPlacement(null)}
