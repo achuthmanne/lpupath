@@ -311,6 +311,48 @@ export default function SharePlacementPage() {
     return (bytes / 1048576).toFixed(1) + " MB";
   };
 
+  const autoFillSampleData = () => {
+    setFormData({
+      fullName: "Rahul Sharma",
+      branch: "B.Tech Computer Science & Engineering",
+      passingYear: "2025 Batch",
+      companyName: "Microsoft",
+      role: "Software Development Engineer (SDE-1)",
+      location: "Bangalore, Karnataka",
+      tier: "Super Dream",
+      totalCtc: "₹42.0 LPA",
+      fixedBase: "₹24.0 LPA (~₹1,65,000 / month)",
+      bonusStocks: "₹5.0 Lakh Bonus + $15k RSUs over 4 yrs",
+      internshipStipend: "₹1,00,000 / month",
+      minCgpa: "7.5+ CGPA",
+      allowedBranches: "B.Tech CSE, IT, ECE",
+      backlogPolicy: "0 Active Backlogs (Cleared history allowed)",
+      difficulty: "Medium - Hard",
+      whatToPrepare: "Master Striver SDE sheet for Trees & Graphs. Make sure your Major Project code is something you wrote yourself because technical interviewers will drill into why you selected specific libraries or database tables.",
+      keyResources: "Striver SDE Sheet, NeetCode 150, Gate Smashers OS & DBMS, TakeUForward",
+      linkedInUrl: "https://www.linkedin.com/in/rahul-sharma-sde",
+    });
+
+    setRounds([
+      {
+        id: "1",
+        roundTitle: "Round 1: Online Assessment (OA)",
+        platformMode: "HackerEarth Platform",
+        duration: "90 Mins",
+        description: "2 DSA questions on Binary Trees and Dynamic Programming (Coin Change variation). 20 Core CS MCQs covering OS virtual memory and DBMS indexing.",
+        keyFocus: "Clean code modularity, edge cases handling, optimal O(N) time complexity.",
+      },
+      {
+        id: "2",
+        roundTitle: "Round 2: Technical Interview 1",
+        platformMode: "MS Teams Video Call",
+        duration: "60 Mins",
+        description: "Live coding on shared editor. Graph BFS traversal problem, followed by detailed discussion on Redis caching and database indexing.",
+        keyFocus: "Explain brute force first, speak thoughts aloud while coding, optimize space complexity.",
+      },
+    ]);
+  };
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -484,14 +526,27 @@ export default function SharePlacementPage() {
             </div>
           ) : (
             <div className="space-y-10">
-              {/* Header (Shown only with form, completely gone on celebration screen!) */}
-              <div className="space-y-3 text-left">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111] tracking-tight leading-none">
-                  Share Your <span className="text-[#FF6500]">Placement Story</span>
-                </h1>
-                <p className="text-sm sm:text-base text-[#52525B] max-w-2xl leading-relaxed">
-                  Every detail you fill in will directly empower LPU juniors with transparent in-hand salary figures, real OA problems, and round-by-round interview intelligence.
-                </p>
+              {/* Header with 1-Click Auto-Fill Helper for Testing */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="space-y-3 text-left">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111] tracking-tight leading-none">
+                    Share Your <span className="text-[#FF6500]">Placement Story</span>
+                  </h1>
+                  <p className="text-sm sm:text-base text-[#52525B] max-w-2xl leading-relaxed">
+                    Every detail you fill in will directly empower LPU juniors with transparent in-hand salary figures, real OA problems, and round-by-round interview intelligence.
+                  </p>
+                </div>
+
+                {/* 1-Click Auto-Fill Sample Data Button */}
+                <button
+                  type="button"
+                  onClick={autoFillSampleData}
+                  className="shrink-0 self-start sm:self-center px-4 py-2.5 bg-[#FFF4EC] hover:bg-[#FFE8D6] text-[#FF6500] border border-[#FFD8C2] rounded-xs text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-2xs"
+                  title="Click to instantly auto-fill all form boxes with realistic sample senior placement data"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>⚡ Auto-Fill Sample Data</span>
+                </button>
               </div>
 
               <form onSubmit={handleSubmit} className="bg-white border border-[#E4E4E7] rounded-xs p-6 sm:p-10 lg:p-12 space-y-12 shadow-sm text-left">
@@ -964,17 +1019,11 @@ export default function SharePlacementPage() {
 
                     {/* Acceptable Proof Types Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      <div className="p-3 bg-[#FAFAFA] border border-[#E4E4E7] rounded-xs flex items-center gap-2.5">
-                        <span className="w-2 h-2 rounded-full bg-[#059669] shrink-0"></span>
-                        <div className="text-xs text-[#111111]">
-                          <strong className="font-bold">Option 1:</strong> UMS Placement Portal Result Screenshot
-                        </div>
+                      <div className="p-3 bg-[#FAFAFA] border border-[#E4E4E7] rounded-xs text-xs text-[#111111]">
+                        <strong className="font-bold">Option 1:</strong> UMS Placement Portal Result Screenshot
                       </div>
-                      <div className="p-3 bg-[#FAFAFA] border border-[#E4E4E7] rounded-xs flex items-center gap-2.5">
-                        <span className="w-2 h-2 rounded-full bg-[#059669] shrink-0"></span>
-                        <div className="text-xs text-[#111111]">
-                          <strong className="font-bold">Option 2:</strong> Official Offer Letter / Job Email (PDF/Image)
-                        </div>
+                      <div className="p-3 bg-[#FAFAFA] border border-[#E4E4E7] rounded-xs text-xs text-[#111111]">
+                        <strong className="font-bold">Option 2:</strong> Official Offer Letter / Job Email (PDF/Image)
                       </div>
                     </div>
 
