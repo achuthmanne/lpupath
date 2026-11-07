@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS public.placement_stories (
   
   -- 1. Student & Company Details
   full_name TEXT NOT NULL,
+  student_photo_url TEXT,
   branch TEXT NOT NULL,
   passing_year TEXT NOT NULL,
   company_name TEXT NOT NULL,
@@ -47,6 +48,9 @@ CREATE TABLE IF NOT EXISTS public.placement_stories (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Ensure student_photo_url column exists if table was already created earlier
+ALTER TABLE public.placement_stories ADD COLUMN IF NOT EXISTS student_photo_url TEXT;
 
 -- 2. Create Index for Fast Queries
 CREATE INDEX IF NOT EXISTS idx_placement_stories_company ON public.placement_stories (company_name);

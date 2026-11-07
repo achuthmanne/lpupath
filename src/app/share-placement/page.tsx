@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { CheckCircle2, Plus, Trash2, ShieldCheck, Upload, FileCheck, X, PartyPopper, Sparkles } from "lucide-react";
+import { CheckCircle2, Plus, Trash2, ShieldCheck, Upload, FileCheck, X, PartyPopper, Sparkles, Camera, User } from "lucide-react";
 
 // Silicon Valley Grade Corporate Confetti & Ribbon Cannon Blast
 // Dual Cannons firing from bottom corners, gracefully meeting & overlapping in the center, then cascading down
@@ -291,6 +291,23 @@ export default function SharePlacementPage() {
     setRounds(updated);
   };
 
+  // Senior Student Profile Photo (Headshot)
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setPhotoFile(file);
+      setPhotoPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const removePhotoFile = () => {
+    setPhotoFile(null);
+    setPhotoPreviewUrl(null);
+  };
+
   // Proof Document Upload (UMS Screenshot or Offer Letter / Mail)
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -351,6 +368,56 @@ export default function SharePlacementPage() {
         keyFocus: "Explain brute force first, speak thoughts aloud while coding, optimize space complexity.",
       },
     ]);
+
+    // Auto-attach sample student profile photo & verification proof file for rapid 1-click test
+    setPhotoPreviewUrl("https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80");
+    setPhotoFile(null);
+
+    try {
+      const sampleBlob = new Blob([
+        "OFFER OF EMPLOYMENT\nMicrosoft India (R&D) Private Limited\nCandidate: Rahul Sharma\nRole: Software Development Engineer (SDE-1)\nTotal CTC: INR 42,00,000\nStatus: Officially Verified & Accepted"
+      ], { type: "text/plain" });
+      const dummyFile = new File([sampleBlob], "Microsoft_Offer_Letter_Rahul_Sharma.pdf", { type: "application/pdf" });
+      setProofFile(dummyFile);
+    } catch {
+      // ignore
+    }
+  };
+
+  const clearForm = () => {
+    setFormData({
+      fullName: "",
+      branch: "",
+      passingYear: "",
+      companyName: "",
+      role: "",
+      location: "",
+      tier: "",
+      totalCtc: "",
+      fixedBase: "",
+      bonusStocks: "",
+      internshipStipend: "",
+      minCgpa: "",
+      allowedBranches: "",
+      backlogPolicy: "",
+      difficulty: "",
+      whatToPrepare: "",
+      keyResources: "",
+      linkedInUrl: "",
+    });
+    setRounds([
+      {
+        id: "1",
+        roundTitle: "",
+        platformMode: "",
+        duration: "",
+        description: "",
+        keyFocus: "",
+      },
+    ]);
+    setPhotoFile(null);
+    setPhotoPreviewUrl(null);
+    setProofFile(null);
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -361,7 +428,13 @@ export default function SharePlacementPage() {
       e.preventDefault();
     }
     
-    // Check that verification proof document is attached
+    // 1. Check that profile photo is attached (MANDATORY)
+    if (!photoFile && !photoPreviewUrl) {
+      alert("Please upload your profile photo before submitting.");
+      return;
+    }
+
+    // 2. Check that verification proof document is attached (MANDATORY)
     if (!proofFile) {
       alert("Please attach your verification document (UMS Result Screenshot or Job Offer Mail / Letter) before submitting.");
       return;
@@ -371,65 +444,102 @@ export default function SharePlacementPage() {
     setSubmitError(null);
 
     try {
-      const supabase = createClient();
       let proofFileUrl: string | null = null;
+      let proofFileName: string | null = null;
+      let studentPhotoUrl: string | null = null;
 
-      // 1. Upload verification proof document if attached
+      // 1. Upload student photo if attached as File
+      if (photoFile) {
+        const photoBody = new FormData();
+        photoBody.append("file", photoFile);
+        const photoRes = await fetch("/api/upload-proof", {
+          method: "POST",
+          body: photoBody,
+        });
+        const photoJson = await photoRes.json();
+        if (photoJson.success && photoJson.publicUrl) {
+          studentPhotoUrl = photoJson.publicUrl;
+        }
+      } else if (photoPreviewUrl && photoPreviewUrl.startsWith("http")) {
+        // Autofill sample image URL or external photo URL
+        studentPhotoUrl = photoPreviewUrl;
+      }
+
+      // 2. Upload verification proof document through our secure server API route (bypasses RLS)
       if (proofFile) {
-        const fileExt = proofFile.name.split(".").pop();
-        const safeName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
-        
-        const { data: uploadData, error: uploadErr } = await supabase.storage
-          .from("placement-proofs")
-          .upload(safeName, proofFile, {
-            cacheControl: "3600",
-            upsert: false,
-          });
+        proofFileName = proofFile.name;
+        const uploadBody = new FormData();
+        uploadBody.append("file", proofFile);
 
-        if (uploadErr) {
-          console.warn("Storage upload note:", uploadErr.message);
-        } else if (uploadData) {
-          const { data: pubData } = supabase.storage
-            .from("placement-proofs")
-            .getPublicUrl(uploadData.path);
-          proofFileUrl = pubData.publicUrl;
+        const uploadRes = await fetch("/api/upload-proof", {
+          method: "POST",
+          body: uploadBody,
+        });
+
+        const uploadJson = await uploadRes.json();
+        if (uploadJson.success && uploadJson.publicUrl) {
+          proofFileUrl = uploadJson.publicUrl;
+        } else {
+          console.error("Storage upload failed:", uploadJson.error);
+          setSubmitError("Failed to upload proof document: " + (uploadJson.error || "Storage error"));
+          setIsSubmitting(false);
+          return;
         }
       }
 
-      // 2. Insert placement story into Supabase 'placement_stories' table (without .select() to prevent RLS conflict)
-      const { error: insertErr } = await supabase
+      // Embed student_photo_url in rounds JSONB so it is guaranteed to persist even if DB column is missing
+      const roundsWithPhoto = rounds.map((r, i) =>
+        i === 0 ? { ...r, student_photo_url: studentPhotoUrl } : r
+      );
+
+      // 3. Insert placement story into Supabase 'placement_stories' table
+      const supabase = createClient();
+      const insertPayload: any = {
+        full_name: formData.fullName.trim(),
+        branch: formData.branch.trim(),
+        passing_year: formData.passingYear,
+        company_name: formData.companyName.trim(),
+        role: formData.role.trim(),
+        location: formData.location.trim(),
+        tier: formData.tier,
+        total_ctc: formData.totalCtc.trim(),
+        fixed_base: formData.fixedBase.trim(),
+        bonus_stocks: formData.bonusStocks.trim() || null,
+        internship_stipend: formData.internshipStipend.trim() || null,
+        min_cgpa: formData.minCgpa.trim() || null,
+        allowed_branches: formData.allowedBranches.trim() || null,
+        backlog_policy: formData.backlogPolicy.trim() || null,
+        difficulty: formData.difficulty || "Medium",
+        rounds: roundsWithPhoto,
+        what_to_prepare: formData.whatToPrepare.trim() || null,
+        key_resources: formData.keyResources.trim() || null,
+        linkedin_url: formData.linkedInUrl.trim() || null,
+        proof_file_url: proofFileUrl,
+        proof_file_name: proofFileName,
+        status: "pending",
+        is_verified: false,
+      };
+
+      if (studentPhotoUrl) {
+        insertPayload.student_photo_url = studentPhotoUrl;
+      }
+
+      let { error: insertErr } = await supabase
         .from("placement_stories")
-        .insert([
-          {
-            full_name: formData.fullName.trim(),
-            branch: formData.branch.trim(),
-            passing_year: formData.passingYear,
-            company_name: formData.companyName.trim(),
-            role: formData.role.trim(),
-            location: formData.location.trim(),
-            tier: formData.tier,
-            total_ctc: formData.totalCtc.trim(),
-            fixed_base: formData.fixedBase.trim(),
-            bonus_stocks: formData.bonusStocks.trim() || null,
-            internship_stipend: formData.internshipStipend.trim() || null,
-            min_cgpa: formData.minCgpa.trim() || null,
-            allowed_branches: formData.allowedBranches.trim() || null,
-            backlog_policy: formData.backlogPolicy.trim() || null,
-            difficulty: formData.difficulty || "Medium",
-            rounds: rounds,
-            what_to_prepare: formData.whatToPrepare.trim() || null,
-            key_resources: formData.keyResources.trim() || null,
-            linkedin_url: formData.linkedInUrl.trim() || null,
-            proof_file_url: proofFileUrl,
-            proof_file_name: proofFile ? proofFile.name : null,
-            status: "pending",
-            is_verified: false,
-          },
-        ]);
+        .insert([insertPayload]);
+
+      // If student_photo_url column is not yet in Supabase schema, retry cleanly without it (photo is still safe in rounds JSONB!)
+      if (insertErr && (insertErr.message?.includes("student_photo_url") || insertErr.code === "PGRST204")) {
+        console.warn("Retrying insert without student_photo_url column (photo safely preserved in rounds JSONB)");
+        delete insertPayload.student_photo_url;
+        const retryResult = await supabase.from("placement_stories").insert([insertPayload]);
+        insertErr = retryResult.error;
+      }
 
       if (insertErr) {
         console.error("Supabase insert error:", insertErr.message || insertErr);
         setSubmitError(insertErr.message || "Failed to submit. Please check your data.");
+        setIsSubmitting(false);
         return;
       }
 
@@ -437,8 +547,7 @@ export default function SharePlacementPage() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: any) {
       console.error("Submission exception:", err);
-      setSubmitted(true);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      setSubmitError(err.message || "Network exception during submission");
     } finally {
       setIsSubmitting(false);
     }
@@ -526,9 +635,9 @@ export default function SharePlacementPage() {
             </div>
           ) : (
             <div className="space-y-10">
-              {/* Header with 1-Click Auto-Fill Helper for Testing */}
+              {/* Title Header with Clean Auto-Fill Button */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="space-y-3 text-left">
+                <div className="space-y-2 text-left">
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111] tracking-tight leading-none">
                     Share Your <span className="text-[#FF6500]">Placement Story</span>
                   </h1>
@@ -537,15 +646,14 @@ export default function SharePlacementPage() {
                   </p>
                 </div>
 
-                {/* 1-Click Auto-Fill Sample Data Button */}
                 <button
                   type="button"
                   onClick={autoFillSampleData}
-                  className="shrink-0 self-start sm:self-center px-4 py-2.5 bg-[#FFF4EC] hover:bg-[#FFE8D6] text-[#FF6500] border border-[#FFD8C2] rounded-xs text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-2xs"
-                  title="Click to instantly auto-fill all form boxes with realistic sample senior placement data"
+                  className="shrink-0 self-start sm:self-center px-4 py-2 bg-white hover:bg-zinc-50 text-[#111111] hover:text-[#FF6500] border border-[#E4E4E7] hover:border-[#FF6500] rounded-xs text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-2xs"
+                  title="Auto-fill sample data to see an example of what to fill in each box"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>⚡ Auto-Fill Sample Data</span>
+                  <Sparkles className="w-3.5 h-3.5 text-[#FF6500]" />
+                  <span>Auto-Fill Sample</span>
                 </button>
               </div>
 
@@ -560,14 +668,63 @@ export default function SharePlacementPage() {
                     1. Basic Placement &amp; Job Info (Student &amp; Company)
                   </h3>
                   <p className="text-xs text-[#71717A] mt-1 font-medium">
-                    Basic identification of the placed senior, university batch, and hiring company.
+                    Basic identification of the placed student, university batch, and hiring company.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {/* Profile Photo Upload (MANDATORY) */}
+                  <div className="sm:col-span-2 flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-zinc-50 border border-[#E4E4E7] rounded-xs">
+                    <div className="relative w-16 h-16 rounded-full overflow-hidden bg-white border-2 border-zinc-200 shadow-2xs flex items-center justify-center shrink-0">
+                      {photoPreviewUrl ? (
+                        <img
+                          src={photoPreviewUrl}
+                          alt="Student Profile Preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-zinc-100 flex items-center justify-center text-zinc-400">
+                          <Camera className="w-6 h-6" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      <div className="flex items-center gap-2">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#111111]">
+                          Profile Photo *
+                        </label>
+                        
+                      </div>
+                      <p className="text-[11px] text-[#71717A]">
+                        Upload your photo to appear alongside your placement card (JPG, PNG, WebP) *
+                      </p>
+                      <div className="flex items-center gap-2 pt-1">
+                        <label className="px-3.5 py-1.5 bg-white border border-[#DCDCE0] hover:border-[#FF6500] text-zinc-800 text-xs font-bold rounded-xs cursor-pointer transition inline-flex items-center gap-1.5 shadow-2xs">
+                          <Upload className="w-3.5 h-3.5 text-[#FF6500]" />
+                          <span>{photoFile || photoPreviewUrl ? "Change Photo" : "Upload Photo *"}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handlePhotoChange}
+                          />
+                        </label>
+                        {(photoFile || photoPreviewUrl) && (
+                          <button
+                            type="button"
+                            onClick={removePhotoFile}
+                            className="px-2.5 py-1.5 text-xs text-rose-600 hover:text-rose-700 font-bold cursor-pointer"
+                          >
+                            Remove Photo
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
-                      Senior Full Name *
+                      Full Name *
                     </label>
                     <input type="text"
                       
@@ -950,12 +1107,12 @@ export default function SharePlacementPage() {
               </div>
 
               {/* ============================================================== */}
-              {/* 5. SENIOR'S PRO-TIPS & MENTORSHIP                              */}
+              {/* 5. PRO-TIPS & PREPARATION ROADMAP                              */}
               {/* ============================================================== */}
               <div className="space-y-6">
                 <div className="pb-3 border-b border-[#E4E4E7]">
                   <h3 className="text-base sm:text-lg font-bold text-[#111111] uppercase tracking-wider">
-                    5. Senior&apos;s Pro-Tips &amp; Mentorship (Guidance for Juniors)
+                    5. Pro-Tips &amp; Preparation Roadmap (Guidance for Juniors)
                   </h3>
                   <p className="text-xs text-[#71717A] mt-1 font-medium">
                     What should a 2nd or 3rd-year LPU junior study right now to crack this exact company?
@@ -965,7 +1122,7 @@ export default function SharePlacementPage() {
                 <div className="space-y-5">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
-                      What to Prepare? (Preparation Roadmap &amp; Senior Advice) *
+                      What to Prepare? (Preparation Roadmap &amp; Key Recommendations) *
                     </label>
                     <textarea rows={4}
                       
