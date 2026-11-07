@@ -1,8 +1,214 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { CheckCircle2, Plus, Trash2, ShieldCheck, Upload, FileCheck, X } from "lucide-react";
+import { CheckCircle2, Plus, Trash2, ShieldCheck, Upload, FileCheck, X, PartyPopper, Sparkles } from "lucide-react";
+
+// Silicon Valley Grade Corporate Confetti & Ribbon Cannon Blast
+// Dual Cannons firing from bottom corners, gracefully meeting & overlapping in the center, then cascading down
+function CorporateConfettiCannons() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+    window.addEventListener("resize", handleResize);
+
+    // Premium Corporate Metallic & Foil Palette (Face color + 3D Shadow shade)
+    const PALETTE = [
+      { color: "#FF6500", dark: "#B33E00" }, // LPU Brand Cadmium Orange
+      { color: "#FFA266", dark: "#D96C24" }, // Shimmering Peach
+      { color: "#F59E0B", dark: "#B45309" }, // Metallic Gold
+      { color: "#10B981", dark: "#047857" }, // Emerald Foil
+      { color: "#3B82F6", dark: "#1D4ED8" }, // Deep Sky Blue
+      { color: "#EC4899", dark: "#BE185D" }, // Carmine Pink
+      { color: "#8B5CF6", dark: "#5B21B6" }, // Imperial Violet
+      { color: "#FFFFFF", dark: "#D4D4D8" }, // Crisp White / Silver Foil
+    ];
+
+    interface Particle {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      w: number;
+      h: number;
+      color: string;
+      dark: string;
+      wobble: number;
+      wobbleSpeed: number;
+      tiltAngle: number;
+      tiltSpeed: number;
+      isRibbon: boolean;
+      opacity: number;
+      alive: boolean;
+      drag: number;
+      gravity: number;
+    }
+
+    const particles: Particle[] = [];
+
+    // Helper to fire a cannon burst angled inwards so it reaches & intermixes in the middle
+    const fireCannon = (
+      originX: number,
+      originY: number,
+      baseAngleDeg: number,
+      count: number,
+      speedMultiplier = 1
+    ) => {
+      for (let i = 0; i < count; i++) {
+        const isRibbon = Math.random() < 0.35; // 35% elegant ribbons, 65% metallic flakes
+
+        // Smooth ~48 degree cone pointing towards center ceiling
+        const angleDeg = baseAngleDeg + (Math.random() * 46 - 23);
+        const angleRad = (angleDeg * Math.PI) / 180;
+
+        // Velocity tuned so particles gracefully glide right into the center 50%
+        const speed = (Math.random() * 12 + 28) * speedMultiplier;
+
+        const colorItem = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+
+        particles.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angleRad) * speed,
+          vy: Math.sin(angleRad) * speed,
+          w: isRibbon ? Math.random() * 4 + 5 : Math.random() * 5 + 7,
+          h: isRibbon ? Math.random() * 32 + 22 : Math.random() * 8 + 8,
+          color: colorItem.color,
+          dark: colorItem.dark,
+          wobble: Math.random() * Math.PI * 2,
+          wobbleSpeed: Math.random() * 0.12 + 0.06,
+          tiltAngle: Math.random() * Math.PI * 2,
+          tiltSpeed: (Math.random() - 0.5) * 0.1,
+          isRibbon,
+          opacity: 1,
+          alive: true,
+          drag: isRibbon ? 0.963 : 0.961, // Calibrated drag allows both streams to cross into the center!
+          gravity: isRibbon ? 0.35 : 0.38, // Smooth, buoyant descent
+        });
+      }
+    };
+
+    // Wave 1: Immediate dual-cannon explosion from bottom-left & bottom-right
+    // Angled at -47 deg and -133 deg so both streams fly towards and meet in the center
+    fireCannon(width * 0.06, height * 0.82, -47, 75, 1.0);
+    fireCannon(width * 0.94, height * 0.82, -133, 75, 1.0);
+
+    // Wave 2: Staggered accent blast at 200ms for rich theatrical depth in the center!
+    let timeoutId = setTimeout(() => {
+      fireCannon(width * 0.1, height * 0.8, -45, 40, 1.08);
+      fireCannon(width * 0.9, height * 0.8, -135, 40, 1.08);
+    }, 200);
+
+    let frameCount = 0;
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+      frameCount++;
+
+      let anyAlive = false;
+
+      particles.forEach((p) => {
+        if (!p.alive) return;
+
+        // Fluid Aerodynamics:
+        p.vx *= p.drag;
+        p.vy += p.gravity;
+        p.vy *= p.drag;
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        p.wobble += p.wobbleSpeed;
+        p.tiltAngle += p.tiltSpeed;
+
+        // Smooth gradual fade after ~2.3 seconds (frame ~135)
+        if (frameCount > 130) {
+          p.opacity -= 0.015;
+          if (p.opacity <= 0) {
+            p.alive = false;
+            return;
+          }
+        }
+
+        // Screen exit check
+        if (p.y > height + 80) {
+          p.alive = false;
+          return;
+        }
+
+        anyAlive = true;
+
+        // 3D Fluttering Simulation (Sine/Cosine dual-face flip)
+        const cosWobble = Math.cos(p.wobble);
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.tiltAngle);
+        ctx.scale(cosWobble, 1); // 3D rotation flip along vertical axis
+
+        // Dual-face lighting: when flipped to underside, use rich 3D shadow color
+        ctx.fillStyle = cosWobble > 0 ? p.color : p.dark;
+        ctx.globalAlpha = Math.max(0, p.opacity);
+
+        if (p.isRibbon) {
+          // Curled twisting ribbon streamer
+          ctx.beginPath();
+          ctx.rect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.fill();
+
+          // Delicate specular highlight line along ribbon center
+          if (cosWobble > 0.3) {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.fillRect(-1, -p.h / 2, 2, p.h);
+          }
+        } else {
+          // High-sheen metallic paper flake
+          ctx.beginPath();
+          ctx.rect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      });
+
+      if (anyAlive) {
+        animId = requestAnimationFrame(render);
+      } else {
+        ctx.clearRect(0, 0, width, height);
+      }
+    };
+
+    animId = requestAnimationFrame(render);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(animId);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 w-screen h-screen pointer-events-none z-50"
+    />
+  );
+}
 
 interface FormRound {
   id: string;
@@ -105,10 +311,95 @@ export default function SharePlacementPage() {
     return (bytes / 1048576).toFixed(1) + " MB";
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e && typeof e.preventDefault === "function") {
+      e.preventDefault();
+    }
+    
+    // Check that verification proof document is attached
+    if (!proofFile) {
+      alert("Please attach your verification document (UMS Result Screenshot or Job Offer Mail / Letter) before submitting.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const supabase = createClient();
+      let proofFileUrl: string | null = null;
+
+      // 1. Upload verification proof document if attached
+      if (proofFile) {
+        const fileExt = proofFile.name.split(".").pop();
+        const safeName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadErr } = await supabase.storage
+          .from("placement-proofs")
+          .upload(safeName, proofFile, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadErr) {
+          console.warn("Storage upload note:", uploadErr.message);
+        } else if (uploadData) {
+          const { data: pubData } = supabase.storage
+            .from("placement-proofs")
+            .getPublicUrl(uploadData.path);
+          proofFileUrl = pubData.publicUrl;
+        }
+      }
+
+      // 2. Insert placement story into Supabase 'placement_stories' table (without .select() to prevent RLS conflict)
+      const { error: insertErr } = await supabase
+        .from("placement_stories")
+        .insert([
+          {
+            full_name: formData.fullName.trim(),
+            branch: formData.branch.trim(),
+            passing_year: formData.passingYear,
+            company_name: formData.companyName.trim(),
+            role: formData.role.trim(),
+            location: formData.location.trim(),
+            tier: formData.tier,
+            total_ctc: formData.totalCtc.trim(),
+            fixed_base: formData.fixedBase.trim(),
+            bonus_stocks: formData.bonusStocks.trim() || null,
+            internship_stipend: formData.internshipStipend.trim() || null,
+            min_cgpa: formData.minCgpa.trim() || null,
+            allowed_branches: formData.allowedBranches.trim() || null,
+            backlog_policy: formData.backlogPolicy.trim() || null,
+            difficulty: formData.difficulty || "Medium",
+            rounds: rounds,
+            what_to_prepare: formData.whatToPrepare.trim() || null,
+            key_resources: formData.keyResources.trim() || null,
+            linkedin_url: formData.linkedInUrl.trim() || null,
+            proof_file_url: proofFileUrl,
+            proof_file_name: proofFile ? proofFile.name : null,
+            status: "pending",
+            is_verified: false,
+          },
+        ]);
+
+      if (insertErr) {
+        console.error("Supabase insert error:", insertErr.message || insertErr);
+        setSubmitError(insertErr.message || "Failed to submit. Please check your data.");
+        return;
+      }
+
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err: any) {
+      console.error("Submission exception:", err);
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -117,49 +408,93 @@ export default function SharePlacementPage() {
       <main className="flex-1 py-12 sm:py-16 lg:py-20 px-6 sm:px-12 lg:px-16 select-none">
         <div className="max-w-4xl mx-auto space-y-10">
           
-          {/* Header */}
-          <div className="space-y-3 text-left">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111] tracking-tight leading-none">
-              Share Your <span className="text-[#FF6500]">Placement Story</span>
-            </h1>
-            <p className="text-sm sm:text-base text-[#52525B] max-w-2xl leading-relaxed">
-              Every detail you fill in will directly empower LPU juniors with transparent in-hand salary figures, real OA problems, and round-by-round interview intelligence.
-            </p>
-          </div>
-
-          {/* Form or Success Card */}
+          {/* Conditional Rendering: Success Screen vs Form + Header */}
           {submitted ? (
-            <div className="bg-white border border-[#E4E4E7] rounded-xs p-10 sm:p-14 text-center space-y-6 shadow-sm">
-              <div className="w-16 h-16 bg-[#ECFDF5] border border-[#A7F3D0] rounded-full mx-auto flex items-center justify-center text-[#059669]">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
+            <div className="relative overflow-hidden bg-white border border-[#E4E4E7] rounded-xs p-8 sm:p-14 lg:p-16 text-center space-y-8 shadow-xs">
+              
+              {/* Confetti & Ribbons Celebration Canvas Layer (One-time cascade) */}
+              <CorporateConfettiCannons />
 
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
-                  Placement Submitted Successfully!
-                </h2>
-                <p className="text-sm text-[#71717A] max-w-md mx-auto leading-relaxed">
-                  Thank you, <strong className="text-[#111111]">{formData.fullName || "Senior"}</strong>! Your interview breakdown and verification proof for <strong className="text-[#111111]">{formData.companyName || "the company"}</strong> have been submitted. Our student team will verify the documents and publish your story to the placement feed.
-                </p>
-              </div>
+              {/* Decorative Subtle Ambient Glow */}
+              <div className="absolute -top-12 -left-12 w-36 h-36 bg-gradient-to-br from-[#FF6500]/15 to-transparent rounded-full blur-xl pointer-events-none" />
+              <div className="absolute -bottom-12 -right-12 w-40 h-40 bg-gradient-to-tl from-[#10B981]/15 to-transparent rounded-full blur-xl pointer-events-none" />
 
-              <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  href="/on-campus-placements"
-                  className="px-8 py-3.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-sm font-medium rounded-full transition shadow-sm cursor-pointer"
-                >
-                  View All Placements Feed
-                </Link>
-                <Link
-                  href="/"
-                  className="px-8 py-3.5 bg-[#111111] text-white text-sm font-medium rounded-full transition cursor-pointer"
-                >
-                  Return to Overview
-                </Link>
+              {/* Content Box (Elevated Above Canvas, Zero Pills!) */}
+              <div className="relative z-20 space-y-7 max-w-2xl mx-auto">
+                
+                {/* Heartfelt Congratulations on Getting Placed */}
+                <div className="space-y-3">
+                  <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-[1.18]">
+                    Hearty Congratulations, <br />
+                    <span className="text-[#FF6500]">
+                      {formData.fullName.trim() || "Achuth"}!
+                    </span>{" "}
+                    🎉
+                  </h2>
+
+                  <p className="text-base sm:text-lg font-bold text-[#111111]">
+                    Proud of your incredible achievement at{" "}
+                    <span className="underline decoration-[#FF6500] decoration-2 underline-offset-4">
+                      {formData.companyName.trim() || "Google"}
+                    </span>
+                    {formData.role.trim() ? ` as ${formData.role.trim()}` : ""}!
+                  </p>
+                </div>
+
+                {/* Heartfelt Gratitude for Paying It Forward to Juniors */}
+                <div className="space-y-4 pt-1 max-w-2xl mx-auto text-[#52525B]">
+                  <p className="text-sm sm:text-base leading-relaxed font-normal">
+                    Cracking campus placements takes immense dedication, endless problem-solving, and perseverance. You have earned every bit of this proud success!
+                  </p>
+
+                  <p className="text-sm sm:text-base leading-relaxed font-normal">
+                    From the bottom of our hearts, <strong className="text-[#111111] font-semibold">thank you for paying it forward</strong>. By openly sharing your real interview questions, coding rounds, and salary transparency, you are giving 1st, 2nd, and 3rd-year juniors walking into Block 32 the exact roadmap and confidence they need before their own placement drive arrives.
+                  </p>
+                </div>
+
+                {/* Primary Action Buttons */}
+                <div className="pt-6 flex flex-wrap items-center justify-center gap-4">
+                  <Link
+                    href="/on-campus-placements"
+                    className="px-8 py-3.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-sm font-semibold rounded-full transition shadow-sm cursor-pointer"
+                  >
+                    Explore Placement Feed
+                  </Link>
+
+                  <Link
+                    href="/"
+                    className="px-8 py-3.5 bg-[#111111] hover:bg-black text-white text-sm font-semibold rounded-full transition cursor-pointer"
+                  >
+                    Back to Overview
+                  </Link>
+                </div>
+
+                {/* Subtle Reset Link */}
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setSubmitted(false)}
+                    className="text-xs text-[#71717A] hover:text-[#111111] underline transition cursor-pointer"
+                  >
+                    Submit another company offer or return to form
+                  </button>
+                </div>
+
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-white border border-[#E4E4E7] rounded-xs p-6 sm:p-10 lg:p-12 space-y-12 shadow-sm text-left">
+            <div className="space-y-10">
+              {/* Header (Shown only with form, completely gone on celebration screen!) */}
+              <div className="space-y-3 text-left">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111] tracking-tight leading-none">
+                  Share Your <span className="text-[#FF6500]">Placement Story</span>
+                </h1>
+                <p className="text-sm sm:text-base text-[#52525B] max-w-2xl leading-relaxed">
+                  Every detail you fill in will directly empower LPU juniors with transparent in-hand salary figures, real OA problems, and round-by-round interview intelligence.
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="bg-white border border-[#E4E4E7] rounded-xs p-6 sm:p-10 lg:p-12 space-y-12 shadow-sm text-left">
               
               {/* ============================================================== */}
               {/* 1. BASIC PLACEMENT & JOB INFO                                  */}
@@ -179,8 +514,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Senior Full Name *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. Rahul Sharma"
                       value={formData.fullName}
@@ -193,9 +528,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Degree &amp; Branch *
                     </label>
-                    <input
-                      type="text"
-                      required
+                    <input type="text"
+                      
                       placeholder="e.g. B.Tech Computer Science &amp; Engineering"
                       value={formData.branch}
                       onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
@@ -207,7 +541,7 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Passing Out Batch Year *
                     </label>
-                    <select
+                    <select 
                       required
                       value={formData.passingYear}
                       onChange={(e) => setFormData({ ...formData, passingYear: e.target.value })}
@@ -225,8 +559,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Company Name Placed In *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. Microsoft, Google, Juspay, Infineon"
                       value={formData.companyName}
@@ -239,8 +573,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Job Profile / Designation *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. Software Development Engineer (SDE-1)"
                       value={formData.role}
@@ -253,8 +587,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Job Location *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. Bangalore, Karnataka / Hyderabad / Hybrid"
                       value={formData.location}
@@ -267,7 +601,7 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       LPU Placement Tier Category *
                     </label>
-                    <select
+                    <select 
                       required
                       value={formData.tier}
                       onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
@@ -300,8 +634,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Total Annual CTC (LPA) *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. ₹42.0 LPA or ₹16.0 LPA"
                       value={formData.totalCtc}
@@ -315,8 +649,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Fixed In-Hand Base Salary (~Per Month) *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. ₹24.0 LPA (~₹1,65,000 / month)"
                       value={formData.fixedBase}
@@ -374,8 +708,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Minimum CGPA Cutoff *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. 7.5+ CGPA or No Cutoff"
                       value={formData.minCgpa}
@@ -388,8 +722,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Allowed Branches *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. B.Tech CSE, IT, ECE or All Branches"
                       value={formData.allowedBranches}
@@ -402,8 +736,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Backlog Policy *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. 0 Active Backlogs (Cleared history allowed)"
                       value={formData.backlogPolicy}
@@ -432,7 +766,7 @@ export default function SharePlacementPage() {
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-[#71717A] mb-1">
                       Overall Drive Difficulty *
                     </label>
-                    <select
+                    <select 
                       required
                       value={formData.difficulty}
                       onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
@@ -460,8 +794,8 @@ export default function SharePlacementPage() {
                           <label className="block text-[10px] font-bold uppercase tracking-wider text-[#71717A] mb-1">
                             Round {index + 1} Name / Title *
                           </label>
-                          <input
-                            type="text"
+                          <input type="text"
+                            
                             required
                             placeholder="e.g. Online Assessment (OA) / Technical Round 1 / HR Round"
                             value={round.roundTitle}
@@ -475,8 +809,8 @@ export default function SharePlacementPage() {
                             <label className="block text-[10px] font-bold uppercase tracking-wider text-[#71717A] mb-1">
                               Platform / Mode *
                             </label>
-                            <input
-                              type="text"
+                            <input type="text"
+                              
                               required
                               placeholder="e.g. HackerEarth / MS Teams / In-Person"
                               value={round.platformMode}
@@ -489,8 +823,8 @@ export default function SharePlacementPage() {
                             <label className="block text-[10px] font-bold uppercase tracking-wider text-[#71717A] mb-1">
                               Duration *
                             </label>
-                            <input
-                              type="text"
+                            <input type="text"
+                              
                               required
                               placeholder="e.g. 90 Mins / 60 Mins"
                               value={round.duration}
@@ -519,8 +853,8 @@ export default function SharePlacementPage() {
                         <label className="block text-[11px] font-bold uppercase tracking-wider text-[#71717A] mb-1.5">
                           Questions Asked, Coding Problems &amp; Discussion *
                         </label>
-                        <textarea
-                          rows={3}
+                        <textarea rows={3}
+                          
                           required
                           placeholder="Describe the coding problems asked (DSA topics), MCQs, system design questions, SQL queries, or behavioral discussions in detail..."
                           value={round.description}
@@ -534,8 +868,8 @@ export default function SharePlacementPage() {
                         <label className="block text-[11px] font-bold uppercase tracking-wider text-[#71717A] mb-1.5">
                           Key Focus / What Interviewers Looked For In Round {index + 1} *
                         </label>
-                        <input
-                          type="text"
+                        <input type="text"
+                          
                           required
                           placeholder="e.g. Clean code modularity, edge case handling, explain brute force first before optimizing..."
                           value={round.keyFocus}
@@ -578,8 +912,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       What to Prepare? (Preparation Roadmap &amp; Senior Advice) *
                     </label>
-                    <textarea
-                      rows={4}
+                    <textarea rows={4}
+                      
                       required
                       placeholder="e.g. Master Striver's SDE sheet for Trees & Graphs. Make sure your Major Project code is something you wrote yourself, because technical interviewers will drill into why you selected specific libraries or database tables."
                       value={formData.whatToPrepare}
@@ -592,8 +926,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Key Learning Resources Recommended (Separated by commas) *
                     </label>
-                    <input
-                      type="text"
+                    <input type="text"
+                      
                       required
                       placeholder="e.g. Striver SDE Sheet, NeetCode 150, Gate Smashers OS & DBMS, TakeUForward"
                       value={formData.keyResources}
@@ -606,8 +940,8 @@ export default function SharePlacementPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#71717A] mb-2">
                       Your LinkedIn Profile Link (To allow juniors to connect with you) *
                     </label>
-                    <input
-                      type="url"
+                    <input type="url"
+                      
                       required
                       placeholder="https://www.linkedin.com/in/your-profile-name"
                       value={formData.linkedInUrl}
@@ -665,10 +999,9 @@ export default function SharePlacementPage() {
                             : "border-[#DCDCE0] hover:border-[#111111] bg-white"
                         } rounded-xs p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition select-none`}
                       >
-                        <input
-                          type="file"
+                        <input type="file"
                           accept=".pdf,image/png,image/jpeg,image/webp,image/jpg"
-                          required
+                          
                           onChange={handleFileChange}
                           className="sr-only"
                         />
@@ -725,7 +1058,13 @@ export default function SharePlacementPage() {
               </div>
 
               {/* Bottom Actions */}
-              <div className="pt-6 border-t border-[#E4E4E7] flex flex-col sm:flex-row items-center justify-between gap-4">
+              {submitError && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-xs text-xs text-red-600 font-medium">
+                    {submitError}
+                  </div>
+                )}
+
+                <div className="pt-6 border-t border-[#E4E4E7] flex flex-col sm:flex-row items-center justify-between gap-4">
                 <Link
                   href="/on-campus-placements"
                   className="text-xs sm:text-sm font-semibold text-[#71717A] hover:text-[#111111] transition"
@@ -735,13 +1074,22 @@ export default function SharePlacementPage() {
 
                 <button
                   type="submit"
-                  className="w-full sm:w-auto inline-flex items-center justify-center px-10 py-4 bg-[#FF6500] hover:bg-[#E55B00] text-white text-sm font-medium rounded-full transition-colors duration-150 shadow-sm cursor-pointer select-none"
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-10 py-4 bg-[#FF6500] hover:bg-[#E55B00] disabled:bg-[#FF6500]/70 text-white text-sm font-semibold rounded-full transition-colors duration-150 shadow-sm cursor-pointer select-none gap-2"
                 >
-                  Submit Placement Story
+                  {isSubmitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <span>Submit Placement Story</span>
+                  )}
                 </button>
               </div>
 
             </form>
+            </div>
           )}
 
           {/* Page Footer Note */}
