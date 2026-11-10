@@ -570,12 +570,12 @@ export default function SharePlacementPage() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#111111] flex flex-col font-sans selection:bg-[#FF6500] selection:text-white">
       {/* Main Container */}
-      <main className="flex-1 py-12 sm:py-16 lg:py-20 px-6 sm:px-12 lg:px-16 select-none">
-        <div className="max-w-4xl mx-auto space-y-10">
+      <main className="flex-1 py-8 sm:py-16 lg:py-20 px-4 sm:px-12 lg:px-16">
+        <div className="max-w-4xl mx-auto space-y-8 sm:space-y-10">
           
           {/* Conditional Rendering: Success Screen vs Form + Header */}
           {submitted ? (
-            <div className="relative overflow-hidden bg-white border border-[#E4E4E7] rounded-xs p-8 sm:p-14 lg:p-16 text-center space-y-8 shadow-xs">
+            <div className="relative overflow-hidden bg-white border border-[#E4E4E7] rounded-xs p-6 sm:p-14 lg:p-16 text-center space-y-6 sm:space-y-8 shadow-xs">
               
               {/* Confetti & Ribbons Celebration Canvas Layer (One-time cascade) */}
               <CorporateConfettiCannons />
@@ -589,7 +589,7 @@ export default function SharePlacementPage() {
                 
                 {/* Heartfelt Congratulations on Getting Placed */}
                 <div className="space-y-3">
-                  <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-[1.18]">
+                  <h2 className="text-2xl sm:text-4xl lg:text-[44px] font-black text-[#111111] tracking-tight leading-tight sm:leading-[1.18]">
                     Hearty Congratulations, <br />
                     <span className="text-[#FF6500]">
                       {formData.fullName.trim() || "Achuth"}!
@@ -669,14 +669,14 @@ export default function SharePlacementPage() {
               </div>
             </div>
           ) : (
-            <div className="space-y-10">
+            <div className="space-y-8 sm:space-y-10">
               {/* Title Header with Clean Auto-Fill Button */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-2 text-left">
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111] tracking-tight leading-none">
+                  <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#111111] tracking-tight leading-tight sm:leading-none">
                     Share Your <span className="text-[#FF6500]">Placement Story</span>
                   </h1>
-                  <p className="text-sm sm:text-base text-[#52525B] max-w-2xl leading-relaxed">
+                  <p className="text-xs sm:text-base text-[#52525B] max-w-2xl leading-relaxed">
                     Every detail you fill in will directly empower LPU juniors with transparent in-hand salary figures, real OA problems, and round-by-round interview intelligence.
                   </p>
                 </div>
@@ -692,7 +692,7 @@ export default function SharePlacementPage() {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="bg-white border border-[#E4E4E7] rounded-xs p-6 sm:p-10 lg:p-12 space-y-12 shadow-sm text-left">
+              <form onSubmit={handleSubmit} className="bg-white border border-[#E4E4E7] rounded-xs p-4 sm:p-10 lg:p-12 space-y-8 sm:space-y-12 shadow-sm text-left">
               
               {/* ============================================================== */}
               {/* 1. BASIC PLACEMENT & JOB INFO                                  */}
@@ -999,7 +999,7 @@ export default function SharePlacementPage() {
               {/* 4. ROUND-BY-ROUND INTERVIEW PROCESS (100% STUDENT CUSTOMIZABLE) */}
               {/* ============================================================== */}
               <div className="space-y-6">
-                <div className="pb-3 border-b border-[#E4E4E7] flex flex-wrap items-center justify-between gap-4">
+                <div className="pb-3 border-b border-[#E4E4E7] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <h3 className="text-base sm:text-lg font-bold text-[#111111] uppercase tracking-wider">
                       4. Round-by-Round Interview Process
@@ -1009,7 +1009,7 @@ export default function SharePlacementPage() {
                     </p>
                   </div>
 
-                  <div>
+                  <div className="w-full sm:w-auto">
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-[#71717A] mb-1">
                       Overall Drive Difficulty *
                     </label>
@@ -1017,7 +1017,7 @@ export default function SharePlacementPage() {
                       required
                       value={formData.difficulty}
                       onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
-                      className="px-3.5 py-2 bg-white border border-[#DCDCE0] rounded-xs text-xs font-bold text-[#111111] focus:outline-none focus:border-[#FF6500]"
+                      className="w-full sm:w-auto px-3.5 py-2 bg-white border border-[#DCDCE0] rounded-xs text-xs font-bold text-[#111111] focus:outline-none focus:border-[#FF6500]"
                     >
                       <option value="">-- Select Difficulty --</option>
                       <option value="Easy">Difficulty: Easy</option>
@@ -1033,36 +1033,51 @@ export default function SharePlacementPage() {
                   {rounds.map((round, index) => (
                     <div
                       key={round.id}
-                      className="bg-[#FAF9F6] border border-[#E4E4E7] rounded-xs p-5 sm:p-6 space-y-4 relative text-left"
+                      className="bg-[#FAF9F6] border border-[#E4E4E7] rounded-xs p-4 sm:p-6 space-y-4 relative text-left"
                     >
                       {/* Round Header Bar with Editable Title, Platform, Duration, and Remove Button */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#E4E4E7]">
-                        <div className="flex-1 min-w-[240px]">
-                          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#71717A] mb-1">
-                            Round {index + 1} Name / Title *
-                          </label>
-                          <input type="text"
-                            
-                            required
-                            placeholder="e.g. Online Assessment (OA) / Technical Round 1 / HR Round"
-                            value={round.roundTitle}
-                            onChange={(e) => updateRound(index, "roundTitle", e.target.value)}
-                            className="w-full px-3 py-2 bg-white border border-[#DCDCE0] rounded-xs text-xs sm:text-sm font-bold text-[#111111] focus:outline-none focus:border-[#FF6500]"
-                          />
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-[#E4E4E7]">
+                        <div className="flex items-center justify-between gap-2 w-full md:flex-1 md:min-w-[200px]">
+                          <div className="flex-1">
+                            <label className="block text-[10px] font-bold uppercase tracking-wider text-[#71717A] mb-1">
+                              Round {index + 1} Name / Title *
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="e.g. Online Assessment (OA) / Technical Round 1"
+                              value={round.roundTitle}
+                              onChange={(e) => updateRound(index, "roundTitle", e.target.value)}
+                              className="w-full px-3 py-2 bg-white border border-[#DCDCE0] rounded-xs text-xs sm:text-sm font-bold text-[#111111] focus:outline-none focus:border-[#FF6500]"
+                            />
+                          </div>
+
+                          {rounds.length > 1 && (
+                            <div className="md:hidden pt-4 shrink-0">
+                              <button
+                                type="button"
+                                onClick={() => removeRound(index)}
+                                className="p-2 text-[#EF4444] hover:bg-[#FEE2E2] rounded-xs transition cursor-pointer"
+                                title="Remove this round"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          )}
                         </div>
 
-                        <div className="w-full sm:w-auto flex flex-wrap items-center gap-3">
+                        <div className="w-full md:w-auto grid grid-cols-2 md:flex md:items-center gap-3">
                           <div>
                             <label className="block text-[10px] font-bold uppercase tracking-wider text-[#71717A] mb-1">
                               Platform / Mode *
                             </label>
-                            <input type="text"
-                              
+                            <input
+                              type="text"
                               required
-                              placeholder="e.g. HackerEarth / MS Teams / In-Person"
+                              placeholder="e.g. HackerEarth / Teams"
                               value={round.platformMode}
                               onChange={(e) => updateRound(index, "platformMode", e.target.value)}
-                              className="px-3 py-2 bg-white border border-[#DCDCE0] rounded-xs text-xs text-[#111111] focus:outline-none focus:border-[#FF6500] w-full sm:w-56"
+                              className="px-3 py-2 bg-white border border-[#DCDCE0] rounded-xs text-xs text-[#111111] focus:outline-none focus:border-[#FF6500] w-full md:w-52"
                             />
                           </div>
 
@@ -1070,18 +1085,18 @@ export default function SharePlacementPage() {
                             <label className="block text-[10px] font-bold uppercase tracking-wider text-[#71717A] mb-1">
                               Duration *
                             </label>
-                            <input type="text"
-                              
+                            <input
+                              type="text"
                               required
-                              placeholder="e.g. 90 Mins / 60 Mins"
+                              placeholder="e.g. 90 Mins"
                               value={round.duration}
                               onChange={(e) => updateRound(index, "duration", e.target.value)}
-                              className="px-3 py-2 bg-white border border-[#DCDCE0] rounded-xs text-xs text-[#111111] focus:outline-none focus:border-[#FF6500] w-full sm:w-28"
+                              className="px-3 py-2 bg-white border border-[#DCDCE0] rounded-xs text-xs text-[#111111] focus:outline-none focus:border-[#FF6500] w-full md:w-28"
                             />
                           </div>
 
                           {rounds.length > 1 && (
-                            <div className="pt-4">
+                            <div className="hidden md:block pt-4 shrink-0">
                               <button
                                 type="button"
                                 onClick={() => removeRound(index)}
@@ -1309,7 +1324,7 @@ export default function SharePlacementPage() {
                 {isLoggedIn && (
                   <Link
                     href="/on-campus-placements"
-                    className="text-xs sm:text-sm font-semibold text-[#71717A] hover:text-[#111111] transition"
+                    className="w-full sm:w-auto text-center text-xs sm:text-sm font-semibold text-[#71717A] hover:text-[#111111] transition py-2"
                   >
                     Cancel and Go Back
                   </Link>
