@@ -637,12 +637,18 @@ export default function SharePlacementPage() {
             <div className="space-y-10">
               {/* Title Header with Clean Auto-Fill Button */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="space-y-2 text-left">
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111] tracking-tight leading-none">
-                    Share Your <span className="text-[#FF6500]">Placement Story</span>
-                  </h1>
+                <div className="space-y-2.5 text-left">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111] tracking-tight leading-none">
+                      Share Your <span className="text-[#FF6500]">Placement Story</span>
+                    </h1>
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Public Access • No Login Required
+                    </span>
+                  </div>
                   <p className="text-sm sm:text-base text-[#52525B] max-w-2xl leading-relaxed">
-                    Every detail you fill in will directly empower LPU juniors with transparent in-hand salary figures, real OA problems, and round-by-round interview intelligence.
+                    Open to all graduated alumni &amp; placed students. Every detail you fill in will directly empower LPU juniors with transparent in-hand salary figures, real OA problems, and round-by-round interview intelligence.
                   </p>
                 </div>
 

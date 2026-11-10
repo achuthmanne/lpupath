@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import StudentLandingPage from "@/components/StudentLandingPage";
 import Turnstile, { TurnstileRef } from "@/components/Turnstile";
@@ -324,12 +325,22 @@ export default function Home() {
       {/* ============================================================== */}
       <div className="w-full lg:w-[48%] h-full flex flex-col justify-between p-8 sm:p-14 lg:p-20 z-10">
         
-        {/* Top Label */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-0.75 h-4 bg-[#FF6500] rounded-full shrink-0" />
-          <span className="text-xs font-bold uppercase tracking-widest text-[#111111]">
-            Placement Intelligence Platform
-          </span>
+        {/* Top Label & Public Placement Link for Alumni */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-0.75 h-4 bg-[#FF6500] rounded-full shrink-0" />
+            <span className="text-xs font-bold uppercase tracking-widest text-[#111111]">
+              Placement Intelligence Platform
+            </span>
+          </div>
+
+          <Link
+            href="/share-placement"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-[#111111] hover:text-white hover:bg-[#FF6500] border border-[#E4E4E7] hover:border-[#FF6500] bg-white transition shadow-2xs cursor-pointer group"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6500] group-hover:bg-white transition-colors" />
+            <span>Alumni / Placed? Share Story →</span>
+          </Link>
         </div>
 
         {/* Center: BIG ANIMATED LOGO + MATTER */}
@@ -625,6 +636,28 @@ export default function Home() {
 
               </form>
             )}
+
+            {/* Graduated Alumni & Placed Students Public Share Callout */}
+            <div className="p-3.5 sm:p-4 rounded-xl bg-zinc-900/90 border border-zinc-800 text-left space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#FF6500]">
+                  Graduated or Placed Senior?
+                </span>
+                <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                  No Login Required
+                </span>
+              </div>
+              <p className="text-xs text-zinc-300 leading-relaxed">
+                If your @lpu.in email is no longer active, you can still share your placement story, OA problems, and interview questions directly with juniors.
+              </p>
+              <Link
+                href="/share-placement"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#FF6500] hover:text-[#FF8533] transition group cursor-pointer"
+              >
+                <span>Share Your Placement Story (Public Form)</span>
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
+            </div>
 
             {/* Bottom Security Assurance */}
             <div className="pt-6 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-500">
