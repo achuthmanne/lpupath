@@ -31,17 +31,6 @@ export default function OnCampusPlacementsPage() {
                   Explore verified recruitment rounds, company cutoffs, online assessment patterns, and actionable interview tips to prepare effectively for upcoming drives.
                 </p>
               </div>
-
-              {/* Callout button for Alumni / Placed Students (Public Access) */}
-              <div className="pt-2 flex items-center gap-3">
-                <Link
-                  href="/share-placement"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FF6500] hover:bg-[#E55B00] text-white text-xs sm:text-sm font-bold rounded-full transition shadow-xs group cursor-pointer"
-                >
-                  <span>+ Share Your Placement Story</span>
-                  <span className="text-[11px] font-normal opacity-90 hidden sm:inline">(No Login Required)</span>
-                </Link>
-              </div>
             </div>
 
             {/* Right Vector Illustration with Horizontal Cut Baseline */}
@@ -154,7 +143,7 @@ export default function OnCampusPlacementsPage() {
                 href="/share-placement"
                 className="inline-flex items-center justify-center px-7 py-3 bg-[#FF6500] hover:bg-[#E55B00] text-white text-sm font-medium rounded-full transition-all duration-200 shadow-sm hover:shadow-md select-none cursor-pointer"
               >
-                Share Your Placement (No Login Required)
+                Share Your Placement
               </Link>
             </div>
 
