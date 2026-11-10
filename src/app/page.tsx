@@ -177,6 +177,12 @@ export default function Home() {
     const targetFocus = Math.min(startIndex + digits.length, otp.length - 1);
     const nextInput = document.getElementById(`otp-${targetFocus}`);
     nextInput?.focus();
+
+    // Auto verify if all digits are entered
+    const fullToken = newOtp.join("").trim();
+    if (fullToken.length === otp.length && !newOtp.includes("")) {
+      handleVerifyOtp(undefined, fullToken);
+    }
   };
 
   const handleOtpChange = (index: number, value: string) => {
@@ -201,6 +207,12 @@ export default function Home() {
       const nextInput = document.getElementById(`otp-${index + 1}`);
       nextInput?.focus();
     }
+
+    // Auto verify if all digits are entered
+    const fullToken = newOtp.join("").trim();
+    if (fullToken.length === otp.length && !newOtp.includes("")) {
+      handleVerifyOtp(undefined, fullToken);
+    }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -211,11 +223,12 @@ export default function Home() {
   };
 
   // Handle Real Supabase OTP Verification
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleVerifyOtp = async (e?: React.FormEvent, customToken?: string) => {
+    if (e) e.preventDefault();
+    if (loading) return;
     setError("");
 
-    const enteredToken = otp.join("").trim();
+    const enteredToken = (customToken || otp.join("")).trim();
     if (enteredToken.length < 6) {
       setError("Please enter the complete verification code");
       return;
