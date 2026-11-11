@@ -508,28 +508,29 @@ export default function StudentLandingPage({ email, onSignOut }: StudentLandingP
       {/* ============================================================== */}
       <section className="flex-1 w-full bg-white relative overflow-hidden flex items-center min-h-[calc(100vh-72px)]">
         
-        {/* RISING EXPANDING WAVE BACKDROP (Continuous Steep Upward Flow into Navbar without any Dome/Corner Down-Curl) */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* SILKY REVERSED ORGANIC CURVE BACKDROP (Matching Reference Image In Reverse - Single Clean Obsidian Tone) */}
+        <div className="hidden lg:block absolute inset-0 pointer-events-none overflow-hidden">
           <svg
             className="w-full h-full"
             viewBox="0 0 1440 800"
             preserveAspectRatio="none"
           >
-            {/* Wave Layer 1: Soft Warm Peach/White Ascending Wave - Shoots straight up into navbar */}
             <path
-              d="M 0,710 C 600,740 920,220 1050,0 L 1440,0 L 1440,800 L 0,800 Z"
-              fill="#FFF5EB"
+              d="M 680,0 C 730,140 750,300 780,440 C 820,620 940,790 1180,790 C 1320,790 1410,740 1440,650 L 1440,0 Z"
+              fill="#111111"
             />
+          </svg>
+        </div>
 
-            {/* Wave Layer 2: Refined Warm Orange Ascending Ribbon - Shoots straight up into navbar */}
+        {/* MOBILE RESPONSIVE CURVE BACKDROP (Gently Framing Right Column On Mobile with Generous Clearance) */}
+        <div className="lg:hidden absolute inset-0 pointer-events-none overflow-hidden">
+          <svg
+            className="w-full h-full"
+            viewBox="0 0 400 900"
+            preserveAspectRatio="none"
+          >
             <path
-              d="M 0,742 C 630,770 1000,240 1150,0 L 1440,0 L 1440,800 L 0,800 Z"
-              fill="#F26522"
-            />
-
-            {/* Wave Layer 3: Solid Natural Obsidian Black - Shoots straight up into navbar */}
-            <path
-              d="M 0,770 C 660,795 1080,260 1250,0 L 1440,0 L 1440,800 L 0,800 Z"
+              d="M 0,510 C 140,490 260,520 400,480 L 400,900 L 0,900 Z"
               fill="#111111"
             />
           </svg>
